@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 - Proyectos</title>
+  <title>ERROR 404 - SYSTEM HALTED</title>
 
-  <!-- Esta línea obliga al navegador a buscar los archivos siempre en la misma carpeta donde está esta página -->
+  <!-- Resuelve rutas relativas automáticamente -->
   <script>
     const base = document.createElement('base');
     const path = window.location.pathname;
@@ -14,6 +14,17 @@
   </script>
 
   <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --accent-blue: #38bdf8;
+      --accent-cyan: #06b6d4;
+      --text-main: #f3f4f6;
+      --text-muted: #94a3b8;
+      --error-red: #ef4444;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -26,70 +37,132 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #0b0f19;
-      color: #f3f4f6;
-      padding: 2.5rem 1.5rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      padding: 3rem 1.5rem;
     }
 
+    .main-wrapper {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    /* Encabezado 404 Robusto */
     .hero-404 {
       text-align: center;
-      margin-bottom: 2.8rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 2rem;
     }
 
-    .glitch-code {
-      font-size: clamp(5.5rem, 15vw, 8.5rem);
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--error-red);
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .status-pulse {
+      width: 8px;
+      height: 8px;
+      background-color: var(--error-red);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--error-red);
+    }
+
+    .title-404 {
+      font-size: clamp(4.5rem, 13vw, 7.5rem);
       font-weight: 900;
       letter-spacing: -3px;
-      line-height: 1;
-      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      line-height: 0.95;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #ffffff 30%, #64748b 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
-    }
-
-    .hero-404 h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #ffffff;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.8rem;
     }
 
     .hero-404 p {
-      font-size: 1rem;
-      color: #94a3b8;
-      max-width: 480px;
-      line-height: 1.5;
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 520px;
       margin: 0 auto;
+      line-height: 1.5;
     }
 
-    .projects-container {
-      width: 100%;
-      max-width: 650px;
+    /* Widgets Dashboard */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
     }
 
-    .projects-header {
-      font-size: 0.85rem;
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #64748b;
-      margin-bottom: 1.2rem;
-      text-align: center;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-weight: 600;
     }
 
-    .grid-projects {
+    .metric-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: monospace;
+    }
+
+    .metric-sub {
+      font-size: 0.78rem;
+      color: var(--accent-cyan);
+    }
+
+    /* Lista de Proyectos */
+    .projects-container {
       display: flex;
       flex-direction: column;
       gap: 1rem;
+    }
+
+    .projects-header {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      font-weight: 700;
+      padding-left: 0.2rem;
     }
 
     .project-card {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #151d2f;
-      border: 1px solid #1e293b;
-      padding: 1.25rem 1.4rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 1.35rem 1.5rem;
       border-radius: 12px;
       text-decoration: none;
       color: inherit;
@@ -98,50 +171,82 @@
     }
 
     .project-card:hover {
-      background: #1e293b;
-      border-color: #38bdf8;
+      background: #172033;
+      border-color: var(--accent-blue);
       transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.1);
     }
 
     .project-info h2 {
       font-size: 1.15rem;
       color: #f8fafc;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.3rem;
+      font-weight: 700;
     }
 
     .project-info p {
-      font-size: 0.9rem;
-      color: #94a3b8;
+      font-size: 0.88rem;
+      color: var(--text-muted);
     }
 
     .arrow {
-      font-size: 1.4rem;
-      color: #38bdf8;
+      font-size: 1.3rem;
+      color: var(--accent-blue);
       transition: transform 0.2s ease;
     }
 
     .project-card:hover .arrow {
-      transform: translateX(4px);
+      transform: translateX(5px);
     }
   </style>
 </head>
 <body>
 
-  <section class="hero-404">
-    <div class="glitch-code">404</div>
-    <h1>Ups, nada por aquí... ¿o sí?</h1>
-    <p>Llegaste a una página en construcción, pero puedes explorar los proyectos activos:</p>
-  </section>
+  <div class="main-wrapper">
 
-  <section class="projects-container">
-    <h2 class="projects-header">Proyectos disponibles</h2>
-    
-    <div class="grid-projects">
+    <!-- Sección 404 Imponente -->
+    <header class="hero-404">
+      <div class="status-badge">
+        <span class="status-pulse"></span>
+        HTTP 404 // Resource Not Found
+      </div>
+      <div class="title-404">ERROR 404</div>
+      <p>La dirección solicitada no existe o fue reubicada en el servidor. Puedes redirigirte a los módulos disponibles a continuación:</p>
+    </header>
+
+    <!-- Barra de Datos / Widgets -->
+    <section class="metrics-grid">
+      <!-- Hora en Alaska -->
+      <div class="metric-card">
+        <span class="metric-label">Hora // Alaska (AKST)</span>
+        <div id="alaska-time" class="metric-value">--:--:--</div>
+        <span class="metric-sub">Zona horaria activa</span>
+      </div>
+
+      <!-- Clima en Alaska -->
+      <div class="metric-card">
+        <span class="metric-label">Clima // Juneau, AK</span>
+        <div id="alaska-weather" class="metric-value">Cargando...</div>
+        <span id="alaska-weather-sub" class="metric-sub">Consultando estación...</span>
+      </div>
+
+      <!-- Dólar Tarjeta -->
+      <div class="metric-card">
+        <span class="metric-label">Dólar Tarjeta</span>
+        <div id="dolar-tarjeta" class="metric-value">$ --</div>
+        <span id="dolar-sub" class="metric-sub">Cotización en tiempo real</span>
+      </div>
+    </section>
+
+    <!-- Proyectos Activos -->
+    <main class="projects-container">
+      <div class="projects-header">Accesos del Sistema</div>
+
       <!-- Arte -->
       <a href="arte.html" class="project-card">
         <div class="project-info">
           <h2>Galería / Mia Art</h2>
-          <p>Explorar el proyecto y catálogo de arte</p>
+          <p>Explorar catálogo interactivo y colecciones</p>
         </div>
         <span class="arrow">&rarr;</span>
       </a>
@@ -149,22 +254,61 @@
       <!-- Luli -->
       <a href="luli.html" class="project-card">
         <div class="project-info">
-          <h2>Hola Luli v6</h2>
-          <p>Script Python, notas y acertijo</p>
+          <h2>Proyecto Luli v6</h2>
+          <p>Compilación del script, notas y acertijo</p>
         </div>
         <span class="arrow">&rarr;</span>
       </a>
+    </main>
 
-      <!-- Pondes -->
-      <a href="https://mateodespontin.github.io/Pondes/" class="project-card" target="_blank" rel="noopener noreferrer">
-        <div class="project-info">
-          <h2>Pondes</h2>
-          <p>Demo interactiva en GitHub Pages</p>
-        </div>
-        <span class="arrow">&rarr;</span>
-      </a>
-    </div>
-  </section>
+  </div>
+
+  <script>
+    // 1. Reloj de Alaska (Actualización continua)
+    function updateAlaskaClock() {
+      const now = new Date();
+      const options = {
+        timeZone: 'America/Anchorage',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      };
+      document.getElementById('alaska-time').textContent = now.toLocaleTimeString('es-AR', options);
+    }
+    setInterval(updateAlaskaClock, 1000);
+    updateAlaskaClock();
+
+    // 2. Clima de Alaska en tiempo real (Juneau vía Open-Meteo API)
+    async function fetchAlaskaWeather() {
+      try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=58.3019&longitude=-134.4197&current=temperature_2m,weather_code');
+        const data = await res.json();
+        const temp = Math.round(data.current.temperature_2m);
+        document.getElementById('alaska-weather').textContent = `${temp} °C`;
+        document.getElementById('alaska-weather-sub').textContent = 'Open-Meteo live feed';
+      } catch {
+        document.getElementById('alaska-weather').textContent = 'N/D';
+        document.getElementById('alaska-weather-sub').textContent = 'Error de conexión';
+      }
+    }
+    fetchAlaskaWeather();
+
+    // 3. Cotización del Dólar Tarjeta (DolarApi pública)
+    async function fetchDolarTarjeta() {
+      try {
+        const res = await fetch('https://dolarapi.com/v1/dolares/tarjeta');
+        const data = await res.json();
+        const price = data.venta.toLocaleString('es-AR', { minimumFractionDigits: 2 });
+        document.getElementById('dolar-tarjeta').textContent = `$ ${price}`;
+        document.getElementById('dolar-sub').textContent = 'Venta ARS (DolarApi)';
+      } catch {
+        document.getElementById('dolar-tarjeta').textContent = '$ --';
+        document.getElementById('dolar-sub').textContent = 'Sin cotización';
+      }
+    }
+    fetchDolarTarjeta();
+  </script>
 
 </body>
 </html>
