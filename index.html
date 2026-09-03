@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>404 - Proyectos</title>
+
+  <!-- Esta línea obliga al navegador a buscar los archivos siempre en la misma carpeta donde está esta página -->
+  <script>
+    const base = document.createElement('base');
+    const path = window.location.pathname;
+    base.href = window.location.origin + path.substring(0, path.lastIndexOf('/') + 1);
+    document.head.appendChild(base);
+  </script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -129,7 +138,7 @@
     
     <div class="grid-projects">
       <!-- Arte -->
-      <a id="link-arte" href="#" class="project-card">
+      <a href="arte.html" class="project-card">
         <div class="project-info">
           <h2>Galería / Mia Art</h2>
           <p>Explorar el proyecto y catálogo de arte</p>
@@ -138,7 +147,7 @@
       </a>
 
       <!-- Luli -->
-      <a id="link-luli" href="#" class="project-card">
+      <a href="luli.html" class="project-card">
         <div class="project-info">
           <h2>Hola Luli v6</h2>
           <p>Script Python, notas y acertijo</p>
@@ -156,18 +165,6 @@
       </a>
     </div>
   </section>
-
-  <!-- Script que autodetecta el repositorio exacto -->
-  <script>
-    (function() {
-      // Obtiene el path base (ej: /nombre-repo/) sin importar dónde esté alojado
-      const pathSegments = window.location.pathname.split('/').filter(Boolean);
-      const basePath = pathSegments.length > 0 ? '/' + pathSegments[0] + '/' : '/';
-      
-      document.getElementById('link-arte').href = basePath + 'arte.html';
-      document.getElementById('link-luli').href = basePath + 'luli.html';
-    })();
-  </script>
 
 </body>
 </html>
