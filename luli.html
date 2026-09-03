@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hola Luli v6.py</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --purple: #bc8cff;
+      --pink: #f43f5e;
+      --yellow: #d29922;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 780px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Ventana estilo IDE */
+    .ide-window {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .ide-header {
+      background: #090d13;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+
+    .file-tab {
+      font-family: "Fira Code", monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Bloque de código Python */
+    .code-editor {
+      padding: 1rem 1.25rem;
+      font-family: "Fira Code", Consolas, monospace;
+      font-size: 0.9rem;
+      color: #79c0ff;
+      background: #0d1117;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .code-comment { color: var(--text-muted); }
+    .code-keyword { color: #ff7b72; }
+    .code-string { color: #a5d6ff; }
+    .code-func { color: #d2a8ff; }
+
+    /* Contenido del Documento */
+    .document-body {
+      padding: 2rem 1.5rem;
+    }
+
+    .doc-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.25rem;
+    }
+
+    .doc-subtitle {
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      display: block;
+    }
+
+    .section-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      margin-bottom: 0.75rem;
+    }
+
+    .tag-prefacio { background: rgba(88, 166, 255, 0.15); color: var(--accent); }
+    .tag-teorico { background: rgba(244, 63, 94, 0.15); color: var(--pink); }
+    .tag-abstract { background: rgba(210, 153, 34, 0.15); color: var(--yellow); }
+    .tag-desarrollo { background: rgba(63, 185, 80, 0.15); color: var(--green); }
+
+    .section-card p {
+      margin-bottom: 0.9rem;
+      color: #e6edf3;
+      white-space: pre-line;
+    }
+
+    .rules-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin: 0.5rem 0;
+    }
+
+    .rules-list li {
+      padding-left: 1.2rem;
+      position: relative;
+    }
+
+    .rules-list li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      color: var(--pink);
+      font-size: 0.8rem;
+    }
+
+    /* Caja de acertijo / cuenta */
+    .riddle-box {
+      background: #1c1917;
+      border: 1px solid #78350f;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+
+    .calc-math {
+      font-family: monospace;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fbbf24;
+      margin: 0.5rem 0;
+    }
+
+    /* Zona de scroll broma */
+    .phone-scroll-zone {
+      margin: 3rem 0;
+      text-align: center;
+      padding: 4rem 1rem;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.2);
+    }
+
+    .scroll-arrow {
+      font-size: 2.5rem;
+      animation: bounce 1.5s infinite;
+      margin: 1rem 0;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+    }
+
+    /* Botón interactivo de pista final */
+    .final-clue-card {
+      background: linear-gradient(145deg, #161b22, #1f242c);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .reveal-btn {
+      background: var(--accent);
+      color: #0d1117;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .reveal-btn:hover {
+      background: #79c0ff;
+      transform: scale(1.02);
+    }
+
+    .clue-content {
+      display: none;
+      margin-top: 1.25rem;
+      padding: 1rem;
+      background: #090d13;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: var(--green);
+      font-family: monospace;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- IDE Shell -->
+  <div class="ide-window">
+    <div class="ide-header">
+      <div class="dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <div class="file-tab">hola Luli v6.py</div>
+      <div style="width: 40px;"></div>
+    </div>
+
+    <!-- Script inicial -->
+    <div class="code-editor">
+      <span class="code-comment"># Imprimir en consola</span><br>
+      <span class="code-func">print</span>(<span class="code-string">"Hola Luli!"</span>)<br><br>
+      <span class="code-comment"># Escribir en un archivo</span><br>
+      <span class="code-keyword">with</span> <span class="code-func">open</span>(<span class="code-string">'hola Luli v6.txt'</span>, <span class="code-string">'w'</span>) <span class="code-keyword">as</span> archivo:<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;archivo.<span class="code-func">write</span>(<span class="code-string">"Hola Luli!..."</span>)
+    </div>
+
+    <!-- Cuerpo del contenido escrito -->
+    <div class="document-body">
+      <h1 class="doc-title">Hola Luli!</h1>
+      <span class="doc-subtitle">&gt; Leyendo: hola Luli v6.txt</span>
+
+      <!-- Prefacio -->
+      <div class="section-card">
+        <span class="section-tag tag-prefacio">Prefacio</span>
+        <p>A veces sí me acuerdo cómo escribir. No me viene mal un cursito.</p>
+        <p>Agradezco a Lucila Motti. Mi novia. Capa de la vida. Algunas virtudes serán comentadas brevemente, soy un pesado. Sin ella no podría haber hecho este trabajo. A mi familia... Y a Nicolás Rejas por ser mi mentor de tesis.</p>
+      </div>
+
+      <!-- Marco Teórico -->
+      <div class="section-card">
+        <span class="section-tag tag-teorico">Marco teórico</span>
+        <ul class="rules-list">
+          <li><strong>Mi novia siempre tiene la razón</strong></li>
+          <li><em>"1era regla despon no te regales"</em> lm</li>
+          <li>Es la más capa</li>
+          <li>Inteligente</li>
+          <li>Creativa</li>
+          <li>Linda</li>
+          <li>Compañera</li>
+          <li>Genia</li>
+          <li>La quiero infinito y más allá</li>
+          <li>Es muy capa. Aunque a veces me gusta discutirle</li>
+          <li>Siempre tiene la razón. Y si no tiene, se la tengo que dar igual</li>
+        </ul>
+      </div>
+
+      <!-- Abstract -->
+      <div class="section-card">
+        <span class="section-tag tag-abstract">Abstract</span>
+        <p>Me copé anoche con la peli de Nicolás Rejas y me dejé llevar.</p>
+      </div>
+
+      <!-- Desarrollo -->
+      <div class="section-card">
+        <span class="section-tag tag-desarrollo">Desarrollo</span>
+        <p>Luli, este festejo me hizo acordar a los de achu sorpresa que no era sorpresa jajaja. Yo le pedí a la flia una sorpresa y capaz te metí en algo que no estabas tan cómoda, pobre o no. No sé jajaj y está bueno esto de que yo siempre me trato de poner en el otro pero es una construcción mía, no es la realidad y muchas veces me equivoco.</p>
+        
+        <p>Capaz lo tomaste como aventura y se fue por momentos a algo incómodo. Ni idea. Que me veías que me ganaba la ansiedad o yo me perseguía con otra cosa. No quería ponerte incómoda o en un rol medio paja de mentir o lo que sea.</p>
+
+        <p>Me suele pasar en la vida que mis literales (pov) no son los mismos. Mi cuento de la picaña, la "gomita" de pelo y yo llevé Mogul. Anécdotas que te cansaste de escuchar.</p>
+
+        <p>Anécdotas nuevas: ayer en todo el estrés le pedí a mamá que me ayude a poner la carne en la heladerita para mi frigobar para descongelar como hacemos con IPA. Mamá interpretó en la roja de camping.</p>
+
+        <p>No lo quiero hacer muy largo ni hacer muy clase de colegio. Es un punto que hablamos los últimos días y me sale el "mentor de Globant" que siempre me gustó y el día de mañana sumaré algo así. Y me pongo a explicar lo más cotidiano y lógico. Sin asumir nada y puede ser un poco intenso o largo al pedo. Más con lo ansioso que estoy.</p>
+
+        <p>Yo a partir de anoche desde que pasaste por tu casa me puse la peli. Me puse cual encargado a descifrar tu plan. O la peli de Nicolás Rejas o su asistente Rayle. Siempre me encantó ese personaje y lo tenía metido en el subconsciente.<br>
+        Me voy por las ramas. Pero gracias en serio por todo el esfuerzo. La sorpresa.</p>
+
+        <p>Yo hice la mía para vos. Te la voy a dar en privado. Aprendí de navidad un montón je. Tarjetitas después las revisamos y vemos qué mostrás. Igual hice una solapa de privado.</p>
+
+        <p>El literal les cuesta o lo interpretamos distinto. Anunciado. Pero como que no nos entendíamos. Anoche me hice un poco el boludo cuando te llamé. Sabía que tramaban algo y no sabía qué, y me perseguí. Gracias en serio. Por la sorpresa y toda la energía y ganas que le pusieron. Especialmente a mi picotre. SOS una genia.</p>
+
+        <p>Espero que todo esto en privado, especialmente en los próximos meses, podamos charlar y profundizar cosas para ambos jeje. Sin presión. Sin orden ni cronograma, o eso voy a intentar no lo puedo prometer jaja. Eso sí: después de que me bajé del auto no hubo mucho acting. No podía más con mi vida jaja. Vi el club y me inspiré mal e hice lo que quería hacer para tu cumple de los post-its que me mostraste; se me re pasó pero me sirvió la excusa de mi cumple para hacer uno ni mío ni tuyo. Compartido y para que veamos juntos y lo vayamos escribiendo por todo este año.</p>
+
+        <p><em>El tesoro yace en...... Volveremos después de una pausa.</em></p>
+      </div>
+
+      <!-- Cuenta matemática -->
+      <div class="riddle-box">
+        <strong>Hacer la siguiente cuenta:</strong>
+        <div class="calc-math">14 * 155 - 141</div>
+        <small style="color: var(--text-muted);">(Resultado: 2029)</small>
+      </div>
+
+      <!-- Scroll del celu -->
+      <div class="phone-scroll-zone">
+        <p style="color: var(--text-muted); font-size: 0.9rem;">prueba de comprensión lectora</p>
+        <div class="scroll-arrow">⬇️</div>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Mentira, leer hasta abajo</p>
+        <p style="margin-top: 1.5rem; font-style: italic; color: #6e7681;">"Qué feo que es hacer esto desde el celu"</p>
+      </div>
+
+      <!-- Pista interactiva final -->
+      <div class="final-clue-card">
+        <h3 style="color: #fff;">La última pista es:</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.4rem;">
+          Haz clic abajo para ejecutar la función y revelar la pista.
+        </p>
+        <button class="reveal-btn" onclick="revelarPista()">Ejecutar pista_final()</button>
+        <div id="pistaOutput" class="clue-content">
+          🔎 [Escribe aquí dónde está la sorpresa o el tesoro escondido]
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function revelarPista() {
+    const box = document.getElementById('pistaOutput');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+
+</body>
+</html>
