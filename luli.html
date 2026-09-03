@@ -3,22 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hola Luli</title>
+  <title>hola Luli</title>
   <style>
-    :root {
-      --bg: #0d1117;
-      --card-bg: #161b22;
-      --border: #30363d;
-      --text: #c9d1d9;
-      --text-muted: #8b949e;
-      --accent: #58a6ff;
-      --green: #2ea043;
-      --green-glow: #3fb950;
-      --pink: #f43f5e;
-      --yellow: #d29922;
-      --red: #f85149;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -26,474 +12,283 @@
     }
 
     body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace, sans-serif;
-      line-height: 1.6;
-      padding: 2.5rem 1rem;
-      display: flex;
-      justify-content: center;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 760px;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .ide-window {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 12px 36px rgba(0,0,0,0.55);
-    }
-
-    .ide-header {
-      background: #090d13;
-      padding: 0.8rem 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .dots {
-      display: flex;
-      gap: 7px;
-    }
-
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-    .dot-red { background: #ff5f56; }
-    .dot-yellow { background: #ffbd2e; }
-    .dot-green { background: #27c93f; }
-
-    .file-tab {
-      font-family: monospace;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .code-editor {
-      padding: 1.1rem 1.4rem;
-      font-family: monospace;
-      font-size: 0.88rem;
-      color: #79c0ff;
-      background: #0d1117;
-      border-bottom: 1px dashed var(--border);
-    }
-
-    .code-comment { color: var(--text-muted); }
-    .code-keyword { color: #ff7b72; }
-    .code-string { color: #a5d6ff; }
-    .code-func { color: #d2a8ff; }
-
-    .document-body {
-      padding: 2.2rem 1.6rem;
-    }
-
-    .doc-title {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 0.2rem;
-    }
-
-    .doc-subtitle {
-      color: var(--accent);
-      font-family: monospace;
-      font-size: 0.9rem;
-      margin-bottom: 2rem;
-      display: block;
-    }
-
-    .section-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.3rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .section-tag {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      margin-bottom: 0.85rem;
-    }
-
-    .tag-prefacio { background: rgba(88, 166, 255, 0.15); color: var(--accent); }
-    .tag-teorico { background: rgba(244, 63, 94, 0.15); color: var(--pink); }
-    .tag-abstract { background: rgba(210, 153, 34, 0.15); color: var(--yellow); }
-    .tag-desarrollo { background: rgba(63, 185, 80, 0.15); color: var(--green-glow); }
-    .tag-genesis { background: rgba(210, 153, 34, 0.2); color: #fde047; }
-
-    .section-card p {
-      margin-bottom: 0.95rem;
-      color: #e6edf3;
-      white-space: pre-line;
-    }
-
-    .rules-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.45rem;
-      margin: 0.5rem 0;
-    }
-
-    .rules-list li {
-      padding-left: 1.4rem;
+      background-color: #000000;
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      padding: 1.5rem 1rem 3rem 1rem;
       position: relative;
+      min-height: 100vh;
     }
 
-    .rules-list li::before {
-      content: "✔";
-      position: absolute;
+    #matrix-canvas {
+      position: fixed;
+      top: 0;
       left: 0;
-      color: var(--pink);
-      font-size: 0.85rem;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.25;
     }
 
-    /* Formulario de cuenta */
-    .quiz-box {
-      background: #101726;
-      border: 2px solid var(--accent);
-      border-radius: 10px;
-      padding: 1.6rem;
-      margin: 2rem 0;
-      text-align: center;
+    .raw-txt {
+      position: relative;
+      z-index: 1;
+      max-width: 740px;
+      margin: 0 auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      color: #ffffff;
     }
 
-    .quiz-box h3 {
-      color: #fff;
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .calc-math {
-      font-family: monospace;
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: #fbbf24;
-      margin: 0.8rem 0;
-      letter-spacing: 2px;
-    }
-
-    .form-group {
-      display: flex;
-      justify-content: center;
-      gap: 0.6rem;
-      margin-top: 1.2rem;
-      flex-wrap: wrap;
-    }
-
-    .input-answer {
-      background: #0d1117;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
-      color: #fff;
-      font-family: monospace;
-      width: 200px;
-      text-align: center;
-      outline: none;
-      transition: all 0.2s ease;
-    }
-
-    .input-answer:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 8px rgba(88, 166, 255, 0.4);
-    }
-
-    .btn-submit {
-      background: var(--accent);
-      color: #0d1117;
-      border: none;
-      padding: 0.75rem 1.4rem;
-      font-weight: 700;
-      font-size: 0.95rem;
-      border-radius: 6px;
-      cursor: pointer;
+    .inline-form {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      transition: all 0.2s ease;
+      gap: 6px;
+      vertical-align: middle;
+      margin: 0 4px;
     }
 
-    .btn-submit:hover {
-      background: #79c0ff;
-      transform: translateY(-1px);
+    .input-raw {
+      background: #090909;
+      border: 1px solid #444444;
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 11px;
+      padding: 2px 6px;
+      outline: none;
+      vertical-align: middle;
     }
 
-    .input-success {
-      border-color: var(--green-glow) !important;
-      background: rgba(46, 160, 67, 0.15) !important;
-      color: #7ee787 !important;
+    .input-raw:focus {
+      border-color: #00ff66;
+    }
+
+    .btn-raw {
+      background: #111111;
+      border: 1px solid #00ff66;
+      color: #00ff66;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 10px;
+      padding: 2px 8px;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+
+    .btn-raw:hover {
+      background: #003311;
     }
 
     .btn-success {
-      background: var(--green) !important;
+      background: #00441b !important;
+      border-color: #00ff66 !important;
       color: #ffffff !important;
       cursor: default;
     }
 
-    .feedback-msg {
-      margin-top: 0.8rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      min-height: 1.2rem;
+    .coord-slot {
+      color: #333333;
+      user-select: none;
+      font-weight: normal;
     }
 
-    /* Sección Génesis con Pista camuflada */
-    .bible-box {
-      background: #0e1522;
-      border: 1px solid #283447;
-      border-left: 4px solid var(--accent);
-      border-radius: 8px;
-      padding: 1.6rem;
-      margin-top: 2rem;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.05rem;
-      color: #d1d5db;
-      line-height: 1.8;
-    }
-
-    .bible-verse {
-      color: #94a3b8;
-      font-size: 0.85rem;
-      font-weight: 700;
-      vertical-align: super;
-      margin-right: 4px;
-      font-family: monospace;
-    }
-
-    .clue-interruption {
-      background: linear-gradient(135deg, rgba(88, 166, 255, 0.1), rgba(56, 189, 248, 0.05));
-      border: 1px dashed var(--accent);
-      border-radius: 8px;
-      padding: 1.3rem;
-      margin: 1.4rem 0;
-      text-align: center;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    .clue-sentence {
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: #ffffff;
-      margin-bottom: 0.6rem;
-    }
-
-    .coords-display {
-      font-family: monospace;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #38bdf8;
-      background: #090d13;
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
-      border: 1px solid #1e293b;
-      display: inline-block;
-      margin-bottom: 0.6rem;
-      letter-spacing: 1px;
-    }
-
-    .clue-treasure {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #fbbf24;
-      margin-top: 0.2rem;
+    .coord-slot.revealed {
+      color: #00ff66;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
+<canvas id="matrix-canvas"></canvas>
 
-  <div class="ide-window">
-    <div class="ide-header">
-      <div class="dots">
-        <span class="dot dot-red"></span>
-        <span class="dot dot-yellow"></span>
-        <span class="dot dot-green"></span>
-      </div>
-      <div class="file-tab">hola Luli v6.py</div>
-      <div style="width: 40px;"></div>
-    </div>
+<!-- Audio en bucle permanente -->
+<audio id="bg-music" src="musica.mp3" preload="auto" loop></audio>
 
-    <!-- Script inicial -->
-    <div class="code-editor">
-      <span class="code-comment"># Imprimir en consola</span><br>
-      <span class="code-func">print</span>(<span class="code-string">"Hola Luli!"</span>)<br><br>
-      <span class="code-comment"># Escribir en un archivo</span><br>
-      <span class="code-keyword">with</span> <span class="code-func">open</span>(<span class="code-string">'hola Luli v6.txt'</span>, <span class="code-string">'w'</span>) <span class="code-keyword">as</span> archivo:<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;archivo.<span class="code-func">write</span>(<span class="code-string">"Hola Luli!..."</span>)
-    </div>
+<div class="raw-txt">Hola Luli!
 
-    <div class="document-body">
-      <h1 class="doc-title">Hola Luli!</h1>
-      <span class="doc-subtitle">&gt; Conexión establecida: archivo hola Luli v6.txt</span>
+Prefacio:
+A veces si me acuerdo cómo escribir. No me viene mal un cursito.
+Agradezco a Lucila motti. Mi novia. Capa de la vida. Algunas virtudes serán comentadas brevemente, soy un pesado. Sin ella no podría haber echo este trabajo. A mi familia.... Y a Nicolás rejas por ser mi mentor de tesis.
 
-      <!-- Prefacio -->
-      <div class="section-card">
-        <span class="section-tag tag-prefacio">Prefacio</span>
-        <p>A veces sí me acuerdo cómo escribir. No me viene mal un cursito.</p>
-        <p>Agradezco a Lucila Motti. Mi novia. Capa de la vida. Algunas virtudes serán comentadas brevemente, soy un pesado. Sin ella no podría haber hecho este trabajo. A mi familia... Y a Nicolás Rejas por ser mi mentor de tesis.</p>
-      </div>
+Marco teórico:
+Mi novia siempre tiene la razón
+"1era regla despon no te regales"lm
+Es la más capa
+Inteligente
+Creativa
+Linda
+Compañera
+Genia
+La quiero infinito y más allá
+Es muy capa. Aunque a veces me gusta discutir le
+Siempre tiene la razón. Y si no tiene se la tengo que dar igual
 
-      <!-- Marco Teórico -->
-      <div class="section-card">
-        <span class="section-tag tag-teorico">Marco teórico</span>
-        <ul class="rules-list">
-          <li><strong>Mi novia siempre tiene la razón</strong></li>
-          <li><em>"1era regla despon no te regales"</em> lm</li>
-          <li>Es la más capa</li>
-          <li>Inteligente</li>
-          <li>Creativa</li>
-          <li>Linda</li>
-          <li>Compañera</li>
-          <li>Genia</li>
-          <li>La quiero infinito y más allá</li>
-          <li>Es muy capa. Aunque a veces me gusta discutirle</li>
-          <li>Siempre tiene la razón. Y si no tiene, se la tengo que dar igual</li>
-        </ul>
-      </div>
+Abstract:
+Me cope anoche con la peli de Nicolás rejas y me deje llevar
 
-      <!-- Abstract -->
-      <div class="section-card">
-        <span class="section-tag tag-abstract">Abstract</span>
-        <p>Me copé anoche con la peli de Nicolás Rejas y me dejé llevar.</p>
-      </div>
+Desarollo:
+Luli este festejo me hizo acordar a los de achu sorpresa que no era sopresa jajaja. Yo le pedí a la flia una sorpresa y capaz te metí en algo que no estabas tan cómoda pobre o no. No sé jajaj y está bueno esto de que yo siempre me trató de poner en el otro pero es una construcción mía no es la realidad y muchas veces me equivoco. Capaz lo tomaste como aventura y se fue por momentos a algo incómodo. Ni idea Que me veías que me ganaba la ansiedad o yo me perseguía con otra cosa. No quería ponerte incómoda o en un rol medio paja de mentir obvlo que sea.
 
-      <!-- Desarrollo -->
-      <div class="section-card">
-        <span class="section-tag tag-desarrollo">Desarrollo</span>
-        <p>Luli, este festejo me hizo acordar a los de achu sorpresa que no era sorpresa jajaja. Yo le pedí a la flia una sorpresa y capaz te metí en algo que no estabas tan cómoda, pobre o no. No sé jajaj y está bueno esto de que yo siempre me trato de poner en el otro pero es una construcción mía, no es la realidad y muchas veces me equivoco.</p>
-        
-        <p>Capaz lo tomaste como aventura y se fue por momentos a algo incómodo. Ni idea. Que me veías que me ganaba la ansiedad o yo me perseguía con otra cosa. No quería ponerte incómoda o en un rol medio paja de mentir o lo que sea.</p>
+Me suele pasar en la vida que mis literales (pov) no son los mismos. Mi cuento de la picaña, la "gomita" de pelo y yo llevé Mogoul. Anecdotas que te cansaste de escuchar.
 
-        <p>Me suele pasar en la vida que mis literales (pov) no son los mismos. Mi cuento de la picaña, la "gomita" de pelo y yo llevé Mogul. Anécdotas que te cansaste de escuchar.</p>
+Anecdotas nuevas. Ayer en todo el estrés le pedí a mamá que me ayude a poner la carne en la heladerita para mí frigobar para descongelar como hacemos con ipa. Mama interpretó en la roja de camping.
 
-        <p>Anécdotas nuevas: ayer en todo el estrés le pedí a mamá que me ayude a poner la carne en la heladerita para mi frigobar para descongelar como hacemos con IPA. Mamá interpretó en la roja de camping.</p>
+No lo quiero hacer muy largo ni hacer muy clase de colegio. Es un punto que hablamos los últimos días y me sale el "mentor de Globant" que siempre me gustó y el día de mañana sumaré algo así. Y me pongo a explicar lo más cotidiano y lógico. Sin asumir nada y puede ser un poco intenso o largo al pedo. Más con lo ansioso que estoy.
 
-        <p>No lo quiero hacer muy largo ni hacer muy clase de colegio. Es un punto que hablamos los últimos días y me sale el "mentor de Globant" que siempre me gustó y el día de mañana sumaré algo así. Y me pongo a explicar lo más cotidiano y lógico. Sin asumir nada y puede ser un poco intenso o largo al pedo. Más con lo ansioso que estoy.</p>
+Yo a partir de anoche desde que pasaste tu casa me puse la peli. Me puse cuál encargado a decifrar tu plan. O la peli de Nicolás rejas o su asistente rayle. Siempre me encanto ese personaje y lo tenía metido en el subconsciente.
+Me voy por las ramas. Pero gracias en serio por todo el esfuerzo. La sorpresa.
 
-        <p>Yo a partir de anoche desde que pasaste por tu casa me puse la peli. Me puse cual encargado a descifrar tu plan. O la peli de Nicolás Rejas o su asistente Rayle. Siempre me encantó ese personaje y lo tenía metido en el subconsciente.<br>
-        Me voy por las ramas. Pero gracias en serio por todo el esfuerzo. La sorpresa.</p>
+Yo hice la mía para vos. Te la voy a dar en privado. Aprendí de navidad un montón je. Tarjetitas después las revisamos y vemos que mostras. Igual hice una solapa de privado.
 
-        <p>Yo hice la mía para vos. Te la voy a dar en privado. Aprendí de navidad un montón je. Tarjetitas después las revisamos y vemos qué mostrás. Igual hice una solapa de privado.</p>
+El literal les cuesta o lo interpretamos distinto. anunciado. Pero como que no nos entendiamos. Anoche me hice un poco el boludo. Cuando te llamé. Sabia que tramaban algo y no sabía que y me persegui. Gracias en serio. Por la sorpresa y toda la energía y ganas que le pusieron. Especialmente a mi picotre. SOS una genia. Espero que todo esto lo privado especialmente en los próximos meses podamos charlar y profundizar cosas para ambos jeje. Sin presión. Sin orden ni cronograma o eso voy a intentar no lo puedo prometer jaja. Eso sí después de que me baje del auto no hubo mucho acting. No podía más conmi vida jaja. Vi el club y me inspire mal e hicie lo que quería hacer para tu cumple de los postics que me mostraste, se me re paso pero me sirvió la escusa de mi cumple para hacer uno ni mío ni tuyo. Compartido y para que veamos juntos y lo vayamos escribiendo x todo este año.
 
-        <p>El literal les cuesta o lo interpretamos distinto. Anunciado. Pero como que no nos entendíamos. Anoche me hice un poco el boludo cuando te llamé. Sabía que tramaban algo y no sabía qué, y me perseguí. Gracias en serio. Por la sorpresa y toda la energía y ganas que le pusieron. Especialmente a mi picotre. SOS una genia.</p>
+El tesoro llace en...... Volveremos después de una pausa.
 
-        <p>Espero que todo esto en privado, especialmente en los próximos meses, podamos charlar y profundizar cosas para ambos jeje. Sin presión. Sin orden ni cronograma, o eso voy a intentar no lo puedo prometer jaja. Eso sí: después de que me bajé del auto no hubo mucho acting. No podía más con mi vida jaja. Vi el club y me inspiré mal e hice lo que quería hacer para tu cumple de los post-its que me mostraste; se me re pasó pero me sirvió la excusa de mi cumple para hacer uno ni mío ni tuyo. Compartido y para que veamos juntos y lo vayamos escribiendo por todo este año.</p>
+14*155 -141 = <form id="form-1" class="inline-form" onsubmit="enviarForm(event, 'in-1', 'btn-1', 'q1')"><input type="text" id="in-1" class="input-raw" style="width: 75px;" placeholder="respuesta" autocomplete="off" required><button type="submit" id="btn-1" class="btn-raw">enviar</button></form>
 
-        <p><em>El tesoro yace en...... Volveremos después de una pausa.</em></p>
-      </div>
+¿te acordás de nuestro beso en emilio zola? <form id="form-sola" class="inline-form" onsubmit="enviarForm(event, 'in-sola', 'btn-sola', 'qSola')"><input type="text" id="in-sola" class="input-raw" style="width: 140px;" placeholder="respuesta" autocomplete="off" required><button type="submit" id="btn-sola" class="btn-raw">enviar</button></form>
 
-      <!-- Formulario interactivo con botón Enviar -->
-      <div class="quiz-box">
-        <h3>Paso de Verificación</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">Hacer la siguiente cuenta para validar el paso:</p>
-        <div class="calc-math">14 * 155 - 141</div>
-        
-        <form id="quiz-form" onsubmit="validarRespuesta(event)">
-          <div class="form-group">
-            <input 
-              type="text" 
-              id="user-input" 
-              class="input-answer" 
-              placeholder="Ingresa el resultado" 
-              autocomplete="off" 
-              required
-            />
-            <button type="submit" id="btn-enviar" class="btn-submit">
-              <span id="btn-icon">➤</span> <span id="btn-text">Enviar</span>
-            </button>
-          </div>
-          <div id="feedback" class="feedback-msg"></div>
-        </form>
-      </div>
+capital de japon: <form id="form-2" class="inline-form" onsubmit="enviarFormDoble(event, 'in-cap', 'in-mc', 'btn-2', 'q2')"><input type="text" id="in-cap" class="input-raw" style="width: 90px;" placeholder="ciudad" autocomplete="off" required> mc donalds (aprox): <input type="text" id="in-mc" class="input-raw" style="width: 70px;" placeholder="cantidad" autocomplete="off" required><button type="submit" id="btn-2" class="btn-raw">enviar</button></form>
 
-      <!-- Sección Génesis con la Pista camuflada -->
-      <div id="genesis-pista" class="bible-box">
-        <span class="section-tag tag-genesis">Génesis 1:1-8</span>
-        
-        <p>
-          <span class="bible-verse">1</span> En el principio creó Dios los cielos y la tierra. 
-          <span class="bible-verse">2</span> Y la tierra estaba desordenada y vacía, y las tinieblas estaban sobre la faz del abismo, y el Espíritu de Dios se movía sobre la faz de las aguas.
-          <span class="bible-verse">3</span> Y dijo Dios: Sea la luz; y fue la luz.
-        </p>
+---
+All Too Well (10 Minute Version) - Taylor Swift
 
-        <!-- Pista camuflada -->
-        <div class="clue-interruption">
-          <div class="clue-sentence">La pista final es:</div>
-          <div class="coords-display">
-            41°43'57.0"N 49°56'49.0"W
-          </div>
-          <div class="clue-treasure">
-            Ahí está el tesoro.
-          </div>
-        </div>
+I walked through the door with you, the air was cold                                        <span class="coord-slot" data-char="4">[ ]</span>
+But somethin' 'bout it felt like home somehow                                              <span class="coord-slot" data-char="1">[ ]</span>
+And I left my scarf there at your sister's house                                           <span class="coord-slot" data-char="°">[ ]</span>
+And you've still got it in your drawer, even now                                           <span class="coord-slot" data-char="4">[ ]</span>
 
-        <p>
-          <span class="bible-verse">4</span> Y vio Dios que la luz era buena; y separó Dios la luz de las tinieblas. 
-          <span class="bible-verse">5</span> Y llamó Dios a la luz Día, y a las tinieblas llamó Noche. Y fue la tarde y la mañana un día.
-          <span class="bible-verse">6</span> Luego dijo Dios: Haya expansión en medio de las aguas, y separe las aguas de las aguas.
-        </p>
-      </div>
+'Cause there we are again on that little town street                                       <span class="coord-slot" data-char="3">[ ]</span>
+You almost ran the red 'cause you were lookin' over at me                                  <span class="coord-slot" data-char="'">[ ]</span>
+Wind in my hair, I was there                                                               <span class="coord-slot" data-char="5">[ ]</span>
+I remember it all too well                                                                 <span class="coord-slot" data-char="7">[ ]</span>
 
-    </div>
-  </div>
+Photo album on the counter, your cheeks were turnin' red                                   <span class="coord-slot" data-char=".">[ ]</span>
+You used to be a little kid with glasses in a twin-sized bed                               <span class="coord-slot" data-char="0">[ ]</span>
+And your mother's tellin' stories 'bout you on the tee-ball team                           <span class="coord-slot" data-char="&quot;">[ ]</span>
+You tell me 'bout your past, thinkin' your future was me                                   <span class="coord-slot" data-char="N">[ ]</span>
 
+And there we are again in the middle of the night                                          <span class="coord-slot" data-char="4">[ ]</span>
+We're dancin' 'round the kitchen in the refrigerator light                                 <span class="coord-slot" data-char="9">[ ]</span>
+Down the stairs, I was there                                                               <span class="coord-slot" data-char="°">[ ]</span>
+I remember it all too well                                                                 <span class="coord-slot" data-char="5">[ ]</span>
+
+And I was thinking on the drive down, anytime now                                          <span class="coord-slot" data-char="6">[ ]</span>
+He's gonna say it's love, you never called it what it was                                  <span class="coord-slot" data-char="'">[ ]</span>
+'Til we were dead and gone and buried                                                      <span class="coord-slot" data-char="4">[ ]</span>
+Check the pulse and come back swearing it's the same                                       <span class="coord-slot" data-char="9">[ ]</span>
+After three months in the grave                                                            <span class="coord-slot" data-char=".">[ ]</span>
+
+Time won't fly, it's like I'm paralyzed by it                                              <span class="coord-slot" data-char="0">[ ]</span>
+I'd like to be my old self again, but I'm still tryin' to find it                          <span class="coord-slot" data-char="&quot;">[ ]</span>
+After plaid shirt days and nights when you made me your own                                <span class="coord-slot" data-char="W">[ ]</span>
+Now you mail back my things and I walk home alone
+
+'Cause there we are again when I loved you so
+Back before you lost the one real thing you've ever known
+It was rare, I was there
+I remember it all too well
 </div>
 
 <script>
-  function validarRespuesta(event) {
-    event.preventDefault();
-    const input = document.getElementById('user-input');
-    const btn = document.getElementById('btn-enviar');
-    const btnIcon = document.getElementById('btn-icon');
-    const btnText = document.getElementById('btn-text');
-    const feedback = document.getElementById('feedback');
-    const pistaTarget = document.getElementById('genesis-pista');
+  // Autoplay garantizado con desbloqueo de interacción
+  const audio = document.getElementById('bg-music');
 
-    const respuestaCorrecta = 14 * 155 - 141; // 2029
-    const valorIngresado = parseInt(input.value.trim(), 10);
+  function tryPlay() {
+    audio.play().then(() => {
+      // Si empezó a sonar, removemos los listeners
+      window.removeEventListener('click', tryPlay);
+      window.removeEventListener('touchstart', tryPlay);
+      window.removeEventListener('keydown', tryPlay);
+      window.removeEventListener('scroll', tryPlay);
+    }).catch(() => {
+      // Esperando interacción del usuario
+    });
+  }
 
-    if (valorIngresado === respuestaCorrecta) {
-      input.classList.remove('input-error');
-      input.classList.add('input-success');
-      input.disabled = true;
+  // Intento al cargar
+  window.addEventListener('DOMContentLoaded', tryPlay);
+  window.addEventListener('load', tryPlay);
 
-      btn.classList.add('btn-success');
-      btn.disabled = true;
-      btnIcon.textContent = '✔';
-      btnText.textContent = 'Aprobado';
+  // Escuchas en toda la ventana (apenas toca la pantalla o escribe, arranca)
+  window.addEventListener('click', tryPlay);
+  window.addEventListener('touchstart', tryPlay);
+  window.addEventListener('keydown', tryPlay);
+  window.addEventListener('scroll', tryPlay, { passive: true });
 
-      feedback.style.color = '#3fb950';
-      feedback.textContent = '¡Correcto! Desplazando hacia la pista final...';
+  // Matrix Canvas
+  const canvas = document.getElementById('matrix-canvas');
+  const ctx = canvas.getContext('2d');
 
-      setTimeout(() => {
-        pistaTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 200);
-    } else {
-      input.classList.remove('input-success');
-      feedback.style.color = '#f85149';
-      feedback.textContent = 'Cuenta incorrecta. Probá de nuevo calculando bien.';
-      input.focus();
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&*+-/=';
+  const size = 13;
+  let cols = Math.floor(canvas.width / size);
+  let drops = Array(cols).fill(1);
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#00bb44';
+    ctx.font = size + 'px monospace';
+
+    for (let i = 0; i < drops.length; i++) {
+      const char = chars.charAt(Math.floor(Math.random() * chars.length));
+      ctx.fillText(char, i * size, drops[i] * size);
+      if (drops[i] * size > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
     }
+  }
+  setInterval(draw, 35);
+
+  // Validación y revelación de coordenadas
+  const estado = { q1: false, qSola: false, q2: false };
+
+  function checkCompleto() {
+    if (estado.q1 && estado.qSola && estado.q2) {
+      const slots = document.querySelectorAll('.coord-slot');
+      slots.forEach(slot => {
+        slot.textContent = slot.getAttribute('data-char');
+        slot.classList.add('revealed');
+      });
+      setTimeout(() => {
+        slots[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 250);
+    }
+  }
+
+  function enviarForm(e, inId, btnId, key) {
+    e.preventDefault();
+    tryPlay(); // Asegura inicio de audio si aún no arrancó
+    document.getElementById(inId).disabled = true;
+    const btn = document.getElementById(btnId);
+    btn.disabled = true;
+    btn.classList.add('btn-success');
+    btn.textContent = '✔ ok';
+    estado[key] = true;
+    checkCompleto();
+  }
+
+  function enviarFormDoble(e, in1Id, in2Id, btnId, key) {
+    e.preventDefault();
+    tryPlay();
+    document.getElementById(in1Id).disabled = true;
+    document.getElementById(in2Id).disabled = true;
+    const btn = document.getElementById(btnId);
+    btn.disabled = true;
+    btn.classList.add('btn-success');
+    btn.textContent = '✔ ok';
+    estado[key] = true;
+    checkCompleto();
   }
 </script>
 
