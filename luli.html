@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>hola Luli</title>
+  <title>hola Luli v6.txt</title>
   <style>
     * {
       box-sizing: border-box;
@@ -98,16 +98,47 @@
       color: #00ff66;
       font-weight: bold;
     }
+
+    /* Control de audio superior */
+    .audio-tag-bar {
+      margin-bottom: 1.2rem;
+      border-bottom: 1px dashed #222222;
+      padding-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .audio-toggle-btn {
+      background: #051408;
+      border: 1px solid #00ff66;
+      color: #00ff66;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 10px;
+      padding: 2px 8px;
+      cursor: pointer;
+    }
+
+    .audio-toggle-btn:hover {
+      background: #003311;
+    }
   </style>
 </head>
 <body>
 
 <canvas id="matrix-canvas"></canvas>
 
-<!-- Audio en bucle permanente -->
-<audio id="bg-music" src="musica.mp3" preload="auto" loop></audio>
+<!-- Elemento de audio nativo -->
+<audio id="bg-music" loop preload="auto">
+  <source src="./musica.mp3" type="audio/mpeg">
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
 
-<div class="raw-txt">Hola Luli!
+<div class="raw-txt">
+<div class="audio-tag-bar">
+  <span>[system: ready]</span>
+  <button type="button" class="audio-toggle-btn" id="sound-btn" onclick="toggleMusica()">[♪ audio: click to play]</button>
+</div>Hola Luli!
 
 Prefacio:
 A veces si me acuerdo cómo escribir. No me viene mal un cursito.
@@ -130,7 +161,7 @@ Abstract:
 Me cope anoche con la peli de Nicolás rejas y me deje llevar
 
 Desarollo:
-Luli este festejo me hizo acordar a los de achu sorpresa que no era sopresa jajaja. Yo le pedí a la flia una sorpresa y capaz te metí en algo que no estabas tan cómoda pobre o no. No sé jajaj y está bueno esto de que yo siempre me trató de poner en el otro pero es una construcción mía no es la realidad y muchas veces me equivoco. Capaz lo tomaste como aventura y se fue por momentos a algo incómodo. Ni idea Que me veías que me ganaba la ansiedad o yo me perseguía con otra cosa. No quería ponerte incómoda o en un rol medio paja de mentir obvlo que sea.
+Luli este festejo me hizo acordar a los de achu sorpresa que no era sopresa jajaja. Yo le pedí a la flia una sorpresa y capaz te metí en algo que no estabas tan cómoda pobre o no. No sé jajaj y está bueno esto de que yo siempre me trato de poner en el otro pero es una construcción mía no es la realidad y muchas veces me equivoco. Capaz lo tomaste como aventura y se fue por momentos a algo incómodo. Ni idea Que me veías que me ganaba la ansiedad o yo me perseguía con otra cosa. No quería ponerte incómoda o en un rol medio paja de mentir obvlo que sea.
 
 Me suele pasar en la vida que mis literales (pov) no son los mismos. Mi cuento de la picaña, la "gomita" de pelo y yo llevé Mogoul. Anecdotas que te cansaste de escuchar.
 
@@ -194,32 +225,43 @@ I remember it all too well
 </div>
 
 <script>
-  // Autoplay garantizado con desbloqueo de interacción
+  // Control de Audio
   const audio = document.getElementById('bg-music');
+  const soundBtn = document.getElementById('sound-btn');
+  let audioStarted = false;
 
-  function tryPlay() {
-    audio.play().then(() => {
-      // Si empezó a sonar, removemos los listeners
-      window.removeEventListener('click', tryPlay);
-      window.removeEventListener('touchstart', tryPlay);
-      window.removeEventListener('keydown', tryPlay);
-      window.removeEventListener('scroll', tryPlay);
-    }).catch(() => {
-      // Esperando interacción del usuario
-    });
+  function activarAudio() {
+    if (!audioStarted) {
+      audio.play().then(() => {
+        audioStarted = true;
+        soundBtn.textContent = '[♪ audio: ON]';
+        soundBtn.style.color = '#00ff66';
+      }).catch(err => {
+        console.log('Esperando interacción para audio:', err);
+      });
+    }
   }
 
-  // Intento al cargar
-  window.addEventListener('DOMContentLoaded', tryPlay);
-  window.addEventListener('load', tryPlay);
+  function toggleMusica() {
+    if (audio.paused) {
+      audio.play().then(() => {
+        audioStarted = true;
+        soundBtn.textContent = '[♪ audio: ON]';
+      }).catch(() => {
+        alert("Asegúrate de haber subido el archivo con el nombre exacto 'musica.mp3' en la raíz del repositorio.");
+      });
+    } else {
+      audio.pause();
+      soundBtn.textContent = '[♪ audio: OFF]';
+    }
+  }
 
-  // Escuchas en toda la ventana (apenas toca la pantalla o escribe, arranca)
-  window.addEventListener('click', tryPlay);
-  window.addEventListener('touchstart', tryPlay);
-  window.addEventListener('keydown', tryPlay);
-  window.addEventListener('scroll', tryPlay, { passive: true });
+  // Activa apenas toca cualquier parte de la pantalla o cliquea
+  window.addEventListener('click', activarAudio, { once: true });
+  window.addEventListener('touchstart', activarAudio, { once: true });
+  window.addEventListener('keydown', activarAudio, { once: true });
 
-  // Matrix Canvas
+  // Matrix Background
   const canvas = document.getElementById('matrix-canvas');
   const ctx = canvas.getContext('2d');
 
@@ -250,7 +292,7 @@ I remember it all too well
   }
   setInterval(draw, 35);
 
-  // Validación y revelación de coordenadas
+  // Lógica de validación
   const estado = { q1: false, qSola: false, q2: false };
 
   function checkCompleto() {
@@ -268,7 +310,7 @@ I remember it all too well
 
   function enviarForm(e, inId, btnId, key) {
     e.preventDefault();
-    tryPlay(); // Asegura inicio de audio si aún no arrancó
+    activarAudio();
     document.getElementById(inId).disabled = true;
     const btn = document.getElementById(btnId);
     btn.disabled = true;
@@ -280,7 +322,7 @@ I remember it all too well
 
   function enviarFormDoble(e, in1Id, in2Id, btnId, key) {
     e.preventDefault();
-    tryPlay();
+    activarAudio();
     document.getElementById(in1Id).disabled = true;
     document.getElementById(in2Id).disabled = true;
     const btn = document.getElementById(btnId);
