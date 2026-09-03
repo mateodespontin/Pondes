@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 - Portfolio</title>
+  <title>404 - Proyectos</title>
   <style>
     * {
       box-sizing: border-box;
@@ -25,11 +25,11 @@
 
     .hero-404 {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2.8rem;
     }
 
     .glitch-code {
-      font-size: clamp(5rem, 14vw, 8.5rem);
+      font-size: clamp(5.5rem, 15vw, 8.5rem);
       font-weight: 900;
       letter-spacing: -3px;
       line-height: 1;
@@ -54,16 +54,15 @@
       margin: 0 auto;
     }
 
-    /* Contenedor de proyectos */
     .projects-container {
       width: 100%;
-      max-width: 680px;
+      max-width: 650px;
     }
 
     .projects-header {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       color: #64748b;
       margin-bottom: 1.2rem;
       text-align: center;
@@ -75,18 +74,18 @@
       gap: 1rem;
     }
 
-    /* Tarjeta interactiva de proyecto */
     .project-card {
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: #151d2f;
       border: 1px solid #1e293b;
-      padding: 1.2rem 1.4rem;
+      padding: 1.25rem 1.4rem;
       border-radius: 12px;
       text-decoration: none;
       color: inherit;
       transition: all 0.2s ease;
+      cursor: pointer;
     }
 
     .project-card:hover {
@@ -98,7 +97,7 @@
     .project-info h2 {
       font-size: 1.15rem;
       color: #f8fafc;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.35rem;
     }
 
     .project-info p {
@@ -119,39 +118,56 @@
 </head>
 <body>
 
-  <!-- Encabezado 404 -->
   <section class="hero-404">
     <div class="glitch-code">404</div>
     <h1>Ups, nada por aquí... ¿o sí?</h1>
-    <p>Parece que llegaste a una página vacía, pero puedes explorar los proyectos que tengo montados:</p>
+    <p>Llegaste a una página en construcción, pero puedes explorar los proyectos activos:</p>
   </section>
 
-  <!-- Lista de proyectos -->
   <section class="projects-container">
-    <h2 class="projects-header">Proyectos interactivos</h2>
+    <h2 class="projects-header">Proyectos disponibles</h2>
     
     <div class="grid-projects">
-      <!-- Proyecto Pondes -->
+      <!-- Arte -->
+      <a id="link-arte" href="#" class="project-card">
+        <div class="project-info">
+          <h2>Galería / Mia Art</h2>
+          <p>Explorar el proyecto y catálogo de arte</p>
+        </div>
+        <span class="arrow">&rarr;</span>
+      </a>
+
+      <!-- Luli -->
+      <a id="link-luli" href="#" class="project-card">
+        <div class="project-info">
+          <h2>Hola Luli v6</h2>
+          <p>Script Python, notas y acertijo</p>
+        </div>
+        <span class="arrow">&rarr;</span>
+      </a>
+
+      <!-- Pondes -->
       <a href="https://mateodespontin.github.io/Pondes/" class="project-card" target="_blank" rel="noopener noreferrer">
         <div class="project-info">
           <h2>Pondes</h2>
-          <p>Visualizador y demo interactiva en GitHub Pages</p>
+          <p>Demo interactiva en GitHub Pages</p>
         </div>
         <span class="arrow">&rarr;</span>
       </a>
-
-      <!-- Puedes duplicar este bloque para agregar más proyectos -->
-      <!--
-      <a href="https://marvelous-bombolone-35ba51.netlify.app/" class="project-card" target="_blank" rel="noopener noreferrer">
-        <div class="project-info">
-          <h2>Proyecto Netlify</h2>
-          <p>Demo interactiva en producción</p>
-        </div>
-        <span class="arrow">&rarr;</span>
-      </a>
-      -->
     </div>
   </section>
+
+  <!-- Script que autodetecta el repositorio exacto -->
+  <script>
+    (function() {
+      // Obtiene el path base (ej: /nombre-repo/) sin importar dónde esté alojado
+      const pathSegments = window.location.pathname.split('/').filter(Boolean);
+      const basePath = pathSegments.length > 0 ? '/' + pathSegments[0] + '/' : '/';
+      
+      document.getElementById('link-arte').href = basePath + 'arte.html';
+      document.getElementById('link-luli').href = basePath + 'luli.html';
+    })();
+  </script>
 
 </body>
 </html>
