@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hola Luli v6.txt</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #000000;
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      padding: 1.5rem 1rem 4rem 1rem;
+      position: relative;
+      min-height: 100vh;
+    }
+    #matrix-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.25;
+    }
+    .raw-txt {
+      position: relative;
+      z-index: 1;
+      max-width: 740px;
+      margin: 0 auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      color: #ffffff;
+    }
+    .inline-form {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      vertical-align: middle;
+      margin: 0 4px;
+    }
+    .input-raw {
+      background: #090909;
+      border: 1px solid #444444;
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 11px;
+      padding: 2px 6px;
+      outline: none;
+      vertical-align: middle;
+    }
+    .input-raw:focus { border-color: #00ff66; }
+    .btn-raw {
+      background: #111111;
+      border: 1px solid #00ff66;
+      color: #00ff66;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 10px;
+      padding: 2px 8px;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    .btn-raw:hover { background: #003311; }
+    .btn-success {
+      background: #00441b !important;
+      border-color: #00ff66 !important;
+      color: #ffffff !important;
+      cursor: default;
+    }
+    .audio-tag-bar {
+      margin-bottom: 1.2rem;
+      border-bottom: 1px dashed #222222;
+      padding-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .audio-toggle-btn {
+      background: #051408;
+      border: 1px solid #00ff66;
+      color: #00ff66;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 10px;
+      padding: 2px 8px;
+      cursor: pointer;
+    }
+    .audio-toggle-btn:hover { background: #003311; }
+
+    /* Coordenadas minimalistas al final */
+    .coords-container {
+      margin-top: 3rem;
+      text-align: center;
+    }
+    .coords-val {
+      color: #1a1a1a;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      font-family: "Courier New", Courier, monospace;
+      transition: color 0.5s ease;
+    }
+    .coords-val.revealed {
+      color: #00ff66;
+      font-size: 12px;
+      font-weight: normal;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 8px rgba(0, 255, 102, 0.3);
+      user-select: all;
+      -webkit-user-select: all;
+      cursor: pointer;
+    }
+
+    /* Login Overlay Terminal */
+    #login-overlay {
+      position: relative;
+      z-index: 10;
+      max-width: 480px;
+      margin: 12vh auto 0 auto;
+      border: 1px solid #1a3320;
+      background: #050a06;
+      padding: 1.5rem;
+      box-shadow: 0 0 25px rgba(0, 255, 102, 0.1);
+    }
+    .login-header {
+      border-bottom: 1px dashed #1a3320;
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.2rem;
+      color: #00ff66;
+      font-size: 11px;
+    }
+    .login-row {
+      margin-bottom: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .login-label {
+      color: #888888;
+      font-size: 10px;
+    }
+    .login-input {
+      background: #000000;
+      border: 1px solid #333333;
+      color: #00ff66;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 12px;
+      padding: 6px 8px;
+      outline: none;
+      width: 100%;
+    }
+    .login-input:focus { border-color: #00ff66; }
+    .login-btn {
+      background: #00220d;
+      border: 1px solid #00ff66;
+      color: #00ff66;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 11px;
+      padding: 6px 14px;
+      cursor: pointer;
+      margin-top: 0.4rem;
+      width: 100%;
+    }
+    .login-btn:hover { background: #00441b; }
+    .login-msg {
+      margin-top: 0.8rem;
+      font-size: 10px;
+      color: #ff5555;
+      min-height: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+
+<audio id="bg-music" loop preload="auto">
+  <source src="./musica.mp3" type="audio/mpeg">
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Pantalla de Login Terminal -->
+<div id="login-overlay">
+  <div class="login-header">[auth_gateway // terminal v6]</div>
+  <form id="auth-form" onsubmit="handleAuth(event)">
+    <div class="login-row">
+      <span class="login-label">USUARIO:</span>
+      <input type="text" class="login-input" value="lulimoti@hotmail.com" readonly style="color: #aaaaaa; background: #080808; cursor: not-allowed;">
+    </div>
+    <div class="login-row">
+      <span class="login-label">CONTRASEÑA:</span>
+      <input type="password" id="login-pass" class="login-input" placeholder="ingrese contraseña..." autocomplete="off" autofocus required>
+    </div>
+    <button type="submit" class="login-btn">[ INGRESAR ]</button>
+    <div id="login-msg" class="login-msg"></div>
+  </form>
+</div>
+
+<!-- Contenedor Principal -->
+<div class="raw-txt" id="app-root" style="display: none;"></div>
+
+<script>
+  const _kData = "PGRpdiBjbGFzcz0iYXVkaW8tdGFnLWJhciI+CiAgPHNwYW4+W3N5c3RlbTogcmVhZHldPC9zcGFuPgogIDxidXR0b24gdHlwZT0iYnV0dG9uIiBjbGFzcz0iYXVkaW8tdG9nZ2xlLWJ0biIgaWQ9InNvdW5kLWJ0biIgb25jbGljaz0idG9nZ2xlTXVzaWNhKCkiPlvimaogYXVkaW86IGNsaWNrIHRvIHBsYXldPC9idXR0b24+CjwvZGl2PkhvbGEgTHVsaSEKClByZWZhY2lvOgpBIHZlY2VzIHNpIG1lIGFjdWVyZG8gY8OzbW8gZXNjcmliaXIuIE5vIG1lIHZpZW5lIG1hbCB1biBjdXJzaXRvLgpBZ3JhZGV6Y28gYSBMdWNpbGEgbW90dGkuIE1pIG5vdmlhLiBDYXBhIGRlIGxhIHZpZGEuIEFsZ3VuYXMgdmlydHVkZXMgc2Vyw6FuIGNvbWVudGFkYXMgYnJldmVtZW50ZSwgc295IHVuIHBlc2Fkby4gU2luIGVsbGEgbm8gcG9kcsOtYSBoYWJlciBlY2hvIGVzdGUgdHJhYmFqby4gQSBtaSBmYW1pbGlhLi4uLiBZIGEgTmljb2zDoXMgcmVqYXMgcG9yIHNlciBtaSBtZW50b3IgZGUgdGVzaXMuCgpNYXJjbyB0ZcOzcmljbzoKTWkgbm92aWEgc2llbXByZSB0aWVuZSBsYSByYXrDs24KIjFlcmEgcmVnbGEgZGVzcG9uIG5vIHRlIHJlZ2FsZXMibG0KRXMgbGEgbcOhcyBjYXBhCkludGVsaWdlbnRlCkNyZWF0aXZhCkxpbmRhCkNvbXBhw7FlcmEKR2VuaWEKTGEgcXVpZXJvIGluZmluaXRvIHkgbcOhcyBhbGzDoQpFcyBtdXkgY2FwYS4gQXVucXVlIGEgdmVjZXMgbWUgZ3VzdGEgZGlzY3V0aXIgbGUKU2llbXByZSB0aWVuZSBsYSByYXrDs24uIFkgc2kgbm8gdGllbmUgc2UgbGEgdGVuZ28gcXVlIGRhciBpZ3VhbAoKQWJzdHJhY3Q6Ck1lIGNvcGUgYW5vY2hlIGNvbiBsYSBwZWxpIGRlIE5pY29sw6FzIHJlamFzIHkgbWUgZGVqZSBsbGV2YXIKCkRlc2Fyb2xsbzoKTHVsaSBlc3RlIGZlc3Rlam8gbWUgaGl6byBhY29yZGFyIGEgbG9zIGRlIGFjaHUgc29ycHJlc2EgcXVlIG5vIGVyYSBzb3ByZXNhIGphamFqYS4gWW8gbGUgcGVkw60gYSBsYSBmbGlhIHVuYSBzb3JwcmVzYSB5IGNhcGF6IHRlIG1ldMOtIGVuIGFsZ28gcXVlIG5vIGVzdGFiYXMgdGFuIGPDs21vZGEgcG9icmUgbyBuby4gTm8gc8OpIGphamFqIHkgZXN0w6EgYnVlbm8gZXN0byBkZSBxdWUgeW8gc2llbXByZSBtZSB0cmF0byBkZSBwb25lciBlbiBlbCBvdHJvIHBlcm8gZXMgdW5hIGNvbnN0cnVjY2nDs24gbcOtYSBubyBlcyBsYSByZWFsaWRhZCB5IG11Y2hhcyB2ZWNlcyBtZSBlcXVpdm9jby4gQ2FwYXogbG8gdG9tYXN0ZSBjb21vIGF2ZW50dXJhIHkgc2UgZnVlIHBvciBtb21lbnRvcyBhIGFsZ28gaW5jw7Ntb2RvLiBOaSBpZGVhIFF1ZSBtZSB2ZcOtYXMgcXVlIG1lIGdhbmFiYSBsYSBhbnNpZWRhZCBvIHlvIG1lIHBlcnNlZ3XDrWEgY29uIG90cmEgY29zYS4gTm8gcXVlcsOtYSBwb25lcnRlIGluY8OzbW9kYSBvIGVuIHVuIHJvbCBtZWRpbyBwYWphIGRlIG1lbnRpciBvYnZsbyBxdWUgc2VhLgoKTWUgc3VlbGUgcGFzYXIgZW4gbGEgdmlkYSBxdWUgbWlzIGxpdGVyYWxlcyAocG92KSBubyBzb24gbG9zIG1pc21vcy4gTWkgY3VlbnRvIGRlIGxhIHBpY2HDsWEsIGxhICJnb21pdGEiIGRlIHBlbG8geSB5byBsbGV2w6kgTW9nb3VsLiBBbmVjZG90YXMgcXVlIHRlIGNhbnNhc3RlIGRlIGVzY3VjaGFyLgoKQW5lY2RvdGFzIG51ZXZhcy4gQXllciBlbiB0b2RvIGVsIGVzdHLDqXMgbGUgcGVkw60gYSBtYW3DoSBxdWUgbWUgYXl1ZGUgYSBwb25lciBsYSBjYXJuZSBlbiBsYSBoZWxhZGVyaXRhIHBhcmEgbcOtIGZyaWdvYmFyIHBhcmEgZGVzY29uZ2VsYXIgY29tbyBoYWNlbW9zIGNvbiBpcGEuIE1hbWEgaW50ZXJwcmV0w7MgZW4gbGEgcm9qYSBkZSBjYW1waW5nLgoKTm8gbG8gcXVpZXJvIGhhY2VyIG11eSBsYXJnbyBuaSBoYWNlciBtdXkgY2xhc2UgZGUgY29sZWdpby4gRXMgdW4gcHVudG8gcXVlIGhhYmxhbW9zIGxvcyDDumx0aW1vcyBkw61hcyB5IG1lIHNhbGUgZWwgIm1lbnRvciBkZSBHbG9iYW50IiBxdWUgc2llbXByZSBtZSBndXN0w7MgeSBlbCBkw61hIGRlIG1hw7FhbmEgc3VtYXLDqSBhbGdvIGFzw60uIFkgbWUgcG9uZ28gYSBleHBsaWNhciBsbyBtw6FzIGNvdGlkaWFubyB5IGzDs2dpY28uIFNpbiBhc3VtaXIgbmFkYSB5IHB1ZWRlIHNlciB1biBwb2NvIGludGVuc28gbyBsYXJnbyBhbCBwZWRvLiBNw6FzIGNvbiBsbyBhbnNpb3NvIHF1ZSBlc3RveS4KCllvIGEgcGFydGlyIGRlIGFub2NoZSBkZXNkZSBxdWUgcGFzYXN0ZSB0dSBjYXNhIG1lIHB1c2UgbGEgcGVsaS4gTWUgcHVzZSBjdcOhbCBlbmNhcmdhZG8gYSBkZWNpZnJhciB0dSBwbGFuLiBPIGxhIHBlbGkgZGUgTmljb2zDoXMgcmVqYXMgbyBzdSBhc2lzdGVudGUgcmF5bGUuIFNpZW1wcmUgbWUgZW5jYW50byBlc2UgcGVyc29uYWplIHkgbG8gdGVuw61hIG1ldGlkbyBlbiBlbCBzdWJjb25zY2llbnRlLgpNZSB2b3kgcG9yIGxhcyByYW1hcy4gUGVybyBncmFjaWFzIGVuIHNlcmlvIHBvciB0b2RvIGVsIGVzZnVlcnpvLiBMYSBzb3JwcmVzYS4KCllvIGhpY2UgbGEgbcOtYSBwYXJhIHZvcy4gVGUgbGEgdm95IGEgZGFyIGVuIHByaXZhZG8uIEFwcmVuZMOtIGRlIG5hdmlkYWQgdW4gbW9udMOzbiBqZS4gVGFyamV0aXRhcyBkZXNwdcOpcyBsYXMgcmV2aXNhbW9zIHkgdmVtb3MgcXVlIG1vc3RyYXMuIElndWFsIGhpY2UgdW5hIHNvbGFwYSBkZSBwcml2YWRvLgoKRWwgbGl0ZXJhbCBsZXMgY3Vlc3RhIG8gbG8gaW50ZXJwcmV0YW1vcyBkaXN0aW50by4gYW51bmNpYWRvLiBQZXJvIGNvbW8gcXVlIG5vIG5vcyBlbnRlbmRpYW1vcy4gQW5vY2hlIG1lIGhpY2UgdW4gcG9jbyBlbCBib2x1ZG8uIEN1YW5kbyB0ZSBsbGFtw6kuIFNhYmlhIHF1ZSB0cmFtYWJhbiBhbGdvIHkgbm8gc2Fiw61hIHF1ZSB5IG1lIHBlcnNlZ3VpLiBHcmFjaWFzIGVuIHNlcmlvLiBQb3IgbGEgc29ycHJlc2EgeSB0b2RhIGxhIGVuZXJnw61hIHkgZ2FuYXMgcXVlIGxlIHB1c2llcm9uLiBFc3BlY2lhbG1lbnRlIGEgbWkgcGljb3RyZS4gU09TIHVuYSBnZW5pYS4gRXNwZXJvIHF1ZSB0b2RvIGVzdG8gbG8gcHJpdmFkbyBlc3BlY2lhbG1lbnRlIGVuIGxvcyBwcsOzeGltb3MgbWVzZXMgcG9kYW1vcyBjaGFybGFyIHkgcHJvZnVuZGl6YXIgY29zYXMgcGFyYSBhbWJvcyBqZWplLiBTaW4gcHJlc2nDs24uIFNpbiBvcmRlbiBuaSBjcm9ub2dyYW1hIG8gZXNvIHZveSBhIGludGVudGFyIG5vIGxvIHB1ZWRvIHByb21ldGVyIGphamEuIEVzbyBzw60gZGVzcHXDqXMgZGUgcXVlIG1lIGJhamUgZGVsIGF1dG8gbm8gaHVibyBtdWNobyBhY3RpbmcuIE5vIHBvZMOtYSBtw6FzIGNvbm1pIHZpZGEgamFqYS4gVmkgZWwgY2x1YiB5IG1lIGluc3BpcmUgbWFsIGUgaGljaWUgbG8gcXVlIHF1ZXLDrWEgaGFjZXIgcGFyYSB0dSBjdW1wbGUgZGUgbG9zIHBvc3RpY3MgcXVlIG1lIG1vc3RyYXN0ZSwgc2UgbWUgcmUgcGFzbyBwZXJvIG1lIHNpcnZpw7MgbGEgZXNjdXNhIGRlIG1pIGN1bXBsZSBwYXJhIGhhY2VyIHVubyBuaSBtw61vIG5pIHR1eW8uIENvbXBhcnRpZG8geSBwYXJhIHF1ZSB2ZWFtb3MganVudG9zIHkgbG8gdmF5YW1vcyBlc2NyaWJpZW5kbyB4IHRvZG8gZXN0ZSBhw7FvLgoKRWwgdGVzb3JvIGxsYWNlIGVuLi4uLi4uIFZvbHZlcmVtb3MgZGVzcHXDqXMgZGUgdW5hIHBhdXNhLgoKMTQqMTU1IC0xNDEgPSA8Zm9ybSBpZD0iZm9ybS0xIiBjbGFzcz0iaW5saW5lLWZvcm0iIG9uc3VibWl0PSJlbnZpYXJGb3JtKGV2ZW50LCAnaW4tMScsICdidG4tMScsICdxMScpIj48aW5wdXQgdHlwZT0idGV4dCIgaWQ9ImluLTEiIGNsYXNzPSJpbnB1dC1yYXciIHN0eWxlPSJ3aWR0aDogNzVweDsiIHBsYWNlaG9sZGVyPSJyZXNwdWVzdGEiIGF1dG9jb21wbGV0ZT0ib2ZmIiByZXF1aXJlZD48YnV0dG9uIHR5cGU9InN1Ym1pdCIgaWQ9ImJ0bi0xIiBjbGFzcz0iYnRuLXJhdyI+ZW52aWFyPC9idXR0b24+PC9mb3JtPgoKwr90ZSBhY29yZMOhcyBkZSBudWVzdHJvIGJlc28gZW4gZW1pbGlvIHpvbGE/IDxmb3JtIGlkPSJmb3JtLXNvbGEiIGNsYXNzPSJpbmxpbmUtZm9ybSIgb25zdWJtaXQ9ImVudmlhckZvcm0oZXZlbnQsICdpbi1zb2xhJywgJ2J0bi1zb2xhJywgJ3FTb2xhJykiPjxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0iaW4tc29sYSIgY2xhc3M9ImlucHV0LXJhdyIgc3R5bGU9IndpZHRoOiAxNDBweDsiIHBsYWNlaG9sZGVyPSJyZXNwdWVzdGEiIGF1dG9jb21wbGV0ZT0ib2ZmIiByZXF1aXJlZD48YnV0dG9uIHR5cGU9InN1Ym1pdCIgaWQ9ImJ0bi1zb2xhIiBjbGFzcz0iYnRuLXJhdyI+ZW52aWFyPC9idXR0b24+PC9mb3JtPgoKY2FwaXRhbCBkZSBqYXBvbjogPGZvcm0gaWQ9ImZvcm0tMiIgY2xhc3M9ImlubGluZS1mb3JtIiBvbnN1Ym1pdD0iZW52aWFyRm9ybURvYmxlKGV2ZW50LCAnaW4tY2FwJywgJ2luLW1jJywgJ2J0bi0yJywgJ3EyJykiPjxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0iaW4tY2FwIiBjbGFzcz0iaW5wdXQtcmF3IiBzdHlsZT0id2lkdGg6IDkwcHg7IiBwbGFjZWhvbGRlcj0iY2l1ZGFkIiBhdXRvY29tcGxldGU9Im9mZiIgcmVxdWlyZWQ+IG1jIGRvbmFsZHMgKGFwcm94KTogPGlucHV0IHR5cGU9InRleHQiIGlkPSJpbi1tYyIgY2xhc3M9ImlucHV0LXJhdyIgc3R5bGU9IndpZHRoOiA3MHB4OyIgcGxhY2Vob2xkZXI9ImNhbnRpZGFkIiBhdXRvY29tcGxldGU9Im9mZiIgcmVxdWlyZWQ+PGJ1dHRvbiB0eXBlPSJzdWJtaXQiIGlkPSJidG4tMiIgY2xhc3M9ImJ0bi1yYXciPmVudmlhcjwvYnV0dG9uPjwvZm9ybT4KCi0tLQpBbGwgVG9vIFdlbGwgKDEwIE1pbnV0ZSBWZXJzaW9uKSAtIFRheWxvciBTd2lmdAoKSSB3YWxrZWQgdGhyb3VnaCB0aGUgZG9vciB3aXRoIHlvdSwgdGhlIGFpciB3YXMgY29sZApCdXQgc29tZXRoaW4nICdib3V0IGl0IGZlbHQgbGlrZSBob21lIHNvbWVob3cKQW5kIEkgbGVmdCBteSBzY2FyZiB0aGVyZSBhdCB5b3VyIHNpc3RlcidzIGhvdXNlCkFuZCB5b3UndmUgc3RpbGwgZ290IGl0IGluIHlvdXIgZHJhd2VyLCBldmVuIG5vdwoKJ0NhdXNlIHRoZXJlIHdlIGFyZSBhZ2FpbiBvbiB0aGF0IGxpdHRsZSB0b3duIHN0cmVldApZb3UgYWxtb3N0IHJhbiB0aGUgcmVkICdjYXVzZSB5b3Ugd2VyZSBsb29raW4nIG92ZXIgYXQgbWUKV2luZCBpbiBteSBoYWlyLCBJIHdhcyB0aGVyZQpJIHJlbWVtYmVyIGl0IGFsbCB0b28gd2VsbAoKUGhvdG8gYWxidW0gb24gdGhlIGNvdW50ZXIsIHlvdXIgY2hlZWtzIHdlcmUgdHVybmluJyByZWQKWW91IHVzZWQgdG8gYmUgYSBsaXR0bGUga2lkIHdpdGggZ2xhc3NlcyBpbiBhIHR3aW4tc2l6ZWQgYmVkCkFuZCB5b3VyIG1vdGhlcidzIHRlbGxpbicgc3RvcmllcyAnYm91dCB5b3Ugb24gdGhlIHRlZS1iYWxsIHRlYW0KWW91IHRlbGwgbWUgJ2JvdXQgeW91ciBwYXN0LCB0aGlua2luJyB5b3VyIGZ1dHVyZSB3YXMgbWUKCkFuZCB0aGVyZSB3ZSBhcmUgYWdhaW4gaW4gdGhlIG1pZGRsZSBvZiB0aGUgbmlnaHQKV2UncmUgZGFuY2luJyAncm91bmQgdGhlIGtpdGNoZW4gaW4gdGhlIHJlZnJpZ2VyYXRvciBsaWdodApEb3duIHRoZSBzdGFpcnMsIEkgd2FzIHRoZXJlCkkgcmVtZW1iZXIgaXQgYWxsIHRvbyB3ZWxsCgpBbmQgSSB3YXMgdGhpbmtpbmcgb24gdGhlIGRyaXZlIGRvd24sIGFueXRpbWUgbm93CkhlJ3MgZ29ubmEgc2F5IGl0J3MgbG92ZSwgeW91IG5ldmVyIGNhbGxlZCBpdCB3aGF0IGl0IHdhcwonVGlsIHdlIHdlcmUgZGVhZCBhbmQgZ29uZSBhbmQgYnVyaWVkCkNoZWNrIHRoZSBwdWxzZSBhbmQgY29tZSBiYWNrIHN3ZWFyaW5nIGl0J3MgdGhlIHNhbWUKQWZ0ZXIgdGhyZWUgbW9udGhzIGluIHRoZSBncmF2ZQoKVGltZSB3b24ndCBmbHksIGl0J3MgbGlrZSBJJ20gcGFyYWx5emVkIGJ5IGl0CkknZCBsaWtlIHRvIGJlIG15IG9sZCBzZWxmIGFnYWluLCBidXQgSSdtIHN0aWxsIHRyeWluJyB0byBmaW5kIGl0CkFmdGVyIHBsYWlkIHNoaXJ0IGRheXMgYW5kIG5pZ2h0cyB3aGVuIHlvdSBtYWRlIG1lIHlvdXIgb3duCk5vdyB5b3UgbWFpbCBiYWNrIG15IHRoaW5ncyBhbmQgSSB3YWxrIGhvbWUgYWxvbmUKCidDYXVzZSB0aGVyZSB3ZSBhcmUgYWdhaW4gd2hlbiBJIGxvdmVkIHlvdSBzbwpCYWNrIGJlZm9yZSB5b3UgbG9zdCB0aGUgb25lIHJlYWwgdGhpbmcgeW91J3ZlIGV2ZXIga25vd24KSXQgd2FzIHJhcmUsIEkgd2FzIHRoZXJlCkkgcmVtZW1iZXIgaXQgYWxsIHRvbyB3ZWxsCgotLS0KPGRpdiBpZD0iY29vcmRzLWRpc3BsYXkiIGNsYXNzPSJjb29yZHMtY29udGFpbmVyIj4KICA8ZGl2IGlkPSJjb29yZHMtdGV4dCIgY2xhc3M9ImNvb3Jkcy12YWwiPi4gLiAuPC9kaXY+CjwvZGl2Pg==";
+
+  function decodeBase64Utf8(b64) {
+    const binStr = atob(b64);
+    const bytes = new Uint8Array(binStr.length);
+    for (let i = 0; i < binStr.length; i++) {
+      bytes[i] = binStr.charCodeAt(i);
+    }
+    return new TextDecoder('utf-8').decode(bytes);
+  }
+
+  // Lógica del Login
+  let intentos = 0;
+  const PASSWORD_CORRECTA = "luli";
+
+  function unlockSite() {
+    document.getElementById('login-overlay').style.display = 'none';
+    const root = document.getElementById('app-root');
+    root.innerHTML = decodeBase64Utf8(_kData);
+    root.style.display = 'block';
+    activarAudio();
+  }
+
+  function handleAuth(e) {
+    e.preventDefault();
+    activarAudio();
+    intentos++;
+
+    const passInput = document.getElementById('login-pass');
+    const msg = document.getElementById('login-msg');
+    const pass = passInput.value.trim().toLowerCase();
+
+    if (pass === PASSWORD_CORRECTA || intentos >= 3) {
+      msg.style.color = '#00ff66';
+      msg.textContent = 'ACCESO CONCEDIDO...';
+      passInput.disabled = true;
+      setTimeout(() => {
+        unlockSite();
+      }, 700);
+    } else {
+      const restantes = 3 - intentos;
+      msg.style.color = '#ff5555';
+      msg.textContent = 'Contraseña errónea. Intente nuevamente.';
+      passInput.value = '';
+      passInput.focus();
+    }
+  }
+
+  // Audio Control
+  const audio = document.getElementById('bg-music');
+  let audioStarted = false;
+
+  function activarAudio() {
+    if (!audioStarted) {
+      audio.play().then(() => {
+        audioStarted = true;
+        const btn = document.getElementById('sound-btn');
+        if (btn) {
+          btn.textContent = '[♪ audio: ON]';
+          btn.style.color = '#00ff66';
+        }
+      }).catch(() => {});
+    }
+  }
+
+  function toggleMusica() {
+    const btn = document.getElementById('sound-btn');
+    if (audio.paused) {
+      audio.play().then(() => {
+        audioStarted = true;
+        if (btn) btn.textContent = '[♪ audio: ON]';
+      }).catch(() => {
+        alert("Sube el archivo 'musica.mp3' en la raíz del repositorio.");
+      });
+    } else {
+      audio.pause();
+      if (btn) btn.textContent = '[♪ audio: OFF]';
+    }
+  }
+
+  window.addEventListener('click', activarAudio, { once: true });
+  window.addEventListener('touchstart', activarAudio, { once: true });
+  window.addEventListener('keydown', activarAudio, { once: true });
+
+  // Matrix Background Animation
+  const canvas = document.getElementById('matrix-canvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&*+-/=';
+  const size = 13;
+  let cols = Math.floor(canvas.width / size);
+  let drops = Array(cols).fill(1);
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#00bb44';
+    ctx.font = size + 'px monospace';
+
+    for (let i = 0; i < drops.length; i++) {
+      const char = chars.charAt(Math.floor(Math.random() * chars.length));
+      ctx.fillText(char, i * size, drops[i] * size);
+      if (drops[i] * size > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+  setInterval(draw, 35);
+
+  // Lógica de Validación y Coordenadas al Final
+  const estado = { q1: false, qSola: false, q2: false };
+  const _c0 = "NDHCsDQzJzU3LjAiTiA0OcKwNTYnNDkuMCJX"; // 41°43'57.0"N  49°56'49.0"W
+
+  function descifrarPistas() {
+    const raw = decodeBase64Utf8(_c0);
+    const coordsEl = document.getElementById('coords-text');
+    if (coordsEl) {
+      coordsEl.textContent = raw;
+      coordsEl.classList.add('revealed');
+      setTimeout(() => {
+        document.getElementById('coords-display').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 250);
+    }
+  }
+
+  function checkCompleto() {
+    if (estado.q1 && estado.qSola && estado.q2) {
+      descifrarPistas();
+    }
+  }
+
+  function enviarForm(e, inId, btnId, key) {
+    e.preventDefault();
+    activarAudio();
+    document.getElementById(inId).disabled = true;
+    const btn = document.getElementById(btnId);
+    btn.disabled = true;
+    btn.classList.add('btn-success');
+    btn.textContent = '✔ ok';
+    estado[key] = true;
+    checkCompleto();
+  }
+
+  function enviarFormDoble(e, in1Id, in2Id, btnId, key) {
+    e.preventDefault();
+    activarAudio();
+    document.getElementById(in1Id).disabled = true;
+    document.getElementById(in2Id).disabled = true;
+    const btn = document.getElementById(btnId);
+    btn.disabled = true;
+    btn.classList.add('btn-success');
+    btn.textContent = '✔ ok';
+    estado[key] = true;
+    checkCompleto();
+  }
+</script>
+
+</body>
+</html>
