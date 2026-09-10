@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Mia Art — Pintá con el touch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- Script Oficial de Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8795730098491209"
+     crossorigin="anonymous"></script>
+
+<style>
+  :root{
+    --cream:#f6efe4;
+    --ink:#3a2c1e;
+    --ink-soft:#6b5843;
+    --gold:#c1893c;
+    --gold-2:#a9702a;
+    --line:#dccbaa;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #fffaf1 0%, transparent 60%),
+      radial-gradient(1200px 700px at 110% 10%, #fdf3e2 0%, transparent 55%),
+      var(--cream);
+    color:var(--ink);
+    font-family:'Poppins', -apple-system, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+
+  header.hero{ text-align:center; padding:56px 20px 28px; }
+  header.hero h1{
+    font-family:'Playfair Display', serif;
+    font-size:clamp(2.2rem, 6vw, 3.4rem);
+    margin:0; letter-spacing:0.5px; color:var(--ink);
+  }
+  header.hero h1 span{color:var(--gold-2);}
+  header.hero .tagline{
+    margin:10px 0 0; font-weight:300; letter-spacing:2px;
+    text-transform:uppercase; font-size:0.85rem; color:var(--ink-soft);
+  }
+
+  main{ max-width:920px; margin:0 auto; padding:0 18px 60px; }
+
+  section.studio{
+    background:#fffdf8;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 18px 40px -20px rgba(58,44,30,0.35);
+  }
+
+  .canvas-wrap{
+    position:relative;
+    width:100%;
+    max-width:460px;
+    margin:0 auto;
+    aspect-ratio: 768 / 790;
+    border-radius:12px;
+    overflow:hidden;
+    border:10px solid #fffaf1;
+    outline:1px solid var(--line);
+    touch-action:none;
+    background:#fffaf1;
+  }
+  #paintCanvas, #lineArt{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+  }
+  #paintCanvas{ touch-action:none; cursor:crosshair; z-index:1; }
+  #lineArt{
+    z-index:2;
+    pointer-events:none;
+    mix-blend-mode:multiply;
+    -webkit-user-drag:none;
+    user-select:none;
+  }
+
+  .toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    justify-content:center;
+    margin-top:18px;
+  }
+  .mode-btn{
+    font-family:'Poppins',sans-serif;
+    font-size:0.85rem;
+    padding:9px 16px;
+    border-radius:999px;
+    border:1px solid var(--gold);
+    background:transparent;
+    color:var(--gold-2);
+    cursor:pointer;
+  }
+  .mode-btn.active{ background:var(--gold); color:#fff; }
+
+  .palette{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+    margin:16px 0 4px;
+    align-items:center;
+  }
+  .swatch{
+    width:30px; height:30px; border-radius:50%;
+    border:2px solid rgba(58,44,30,0.15);
+    cursor:pointer;
+    padding:0;
+  }
+  .swatch.selected{ border-color:var(--ink); box-shadow:0 0 0 2px #fff, 0 0 0 4px var(--ink); }
+  #customColor{
+    width:34px; height:34px; border-radius:50%;
+    border:2px dashed var(--ink-soft);
+    padding:0; background:none; cursor:pointer; overflow:hidden;
+  }
+
+  .controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px 20px;
+    align-items:center;
+    justify-content:center;
+    margin-top:16px;
+  }
+  .controls label{
+    font-size:0.78rem; color:var(--ink-soft);
+    display:flex; flex-direction:column; gap:4px; min-width:130px;
+  }
+  .controls input[type=range]{ accent-color:var(--gold); }
+  .controls button{
+    font-family:'Poppins',sans-serif; font-size:0.85rem;
+    padding:10px 16px; border-radius:999px;
+    border:1px solid var(--gold); background:transparent;
+    color:var(--gold-2); cursor:pointer; transition:all .15s ease;
+  }
+  .controls button:hover{ background:var(--gold); color:#fff; }
+  .controls button.primary{ background:var(--gold); color:#fff; }
+  .controls button.primary:hover{ background:var(--gold-2); border-color:var(--gold-2); }
+
+  p.hint{ text-align:center; color:var(--ink-soft); font-size:0.82rem; margin:16px 0 4px; }
+
+  /* Banners de Google AdSense */
+  .ads-container {
+    margin-top: 36px;
+    background: #fffdf8;
+    border: 1px dashed var(--line);
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+  }
+  .ads-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  section.follow{ margin-top:44px; }
+  section.follow h2{
+    font-family:'Playfair Display', serif; text-align:center;
+    font-size:1.6rem; margin-bottom:18px;
+  }
+  .follow-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+    gap:16px;
+  }
+  .promo-card{
+    display:block; border-radius:16px; padding:26px 20px;
+    text-align:center; text-decoration:none; color:#fff !important;
+  }
+  .promo-card h3{ margin:0 0 6px; font-family:'Playfair Display', serif; font-size:1.15rem; }
+  .promo-card p{ margin:0 0 16px; font-size:0.85rem; opacity:0.95; }
+  .promo-card .go{
+    display:inline-block; background:#fff; padding:9px 20px;
+    border-radius:999px; font-size:0.78rem; font-weight:700;
+  }
+  .promo-card.instagram{ background:linear-gradient(135deg,#f58529,#dd2a7b 45%,#8134af 75%,#515bd4); }
+  .promo-card.instagram .go{ color:#dd2a7b; }
+  .promo-card.tiendanube{ background:linear-gradient(135deg,#00c569,#00a99d); }
+  .promo-card.tiendanube .go{ color:#00a99d; }
+
+  footer{ text-align:center; padding:34px 20px 40px; color:var(--ink-soft); font-size:0.78rem; }
+  footer a{ text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>Mia <span>Art</span></h1>
+  <p class="tagline">Tocá el dibujo · Pintá con el celu</p>
+</header>
+
+<main>
+  <section class="studio">
+    <div class="canvas-wrap">
+      <canvas id="paintCanvas"></canvas>
+      <img id="lineArt" src="data:image/png;base64,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" alt="Dibujo para pintar" draggable="false">
+    </div>
+
+    <div class="toolbar">
+      <button id="brushModeBtn" class="mode-btn active">✏️ Pincel</button>
+      <button id="bucketModeBtn" class="mode-btn">🪣 Balde</button>
+    </div>
+
+    <div class="palette" id="palette"></div>
+
+    <div class="controls">
+      <label>Grosor del pincel
+        <input type="range" id="brushSize" min="6" max="45" value="16">
+      </label>
+      <button id="clearBtn">🧹 Reiniciar</button>
+      <button id="saveBtn" class="primary">💾 Guardar mi pintura</button>
+    </div>
+
+    <p class="hint">Elegí un color, después deslizá el dedo para pintar libremente, o tocá "Balde" y apretá una zona del dibujo para rellenarla de color.</p>
+  </section>
+
+  <!-- Banner Google AdSense (Superior al bloque social) -->
+  <div class="ads-container">
+    <div class="ads-label">Publicidad</div>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-8795730098491209"
+         data-ad-slot="auto"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+  <section class="follow">
+    <h2>Encontranos</h2>
+    <div class="follow-cards">
+      <a class="promo-card instagram" href="https://www.instagram.com/universomia.art/" target="_blank" rel="noopener noreferrer">
+        <h3>📸 Instagram</h3>
+        <p>@universomia.art — más arte y novedades</p>
+        <span class="go">Seguir</span>
+      </a>
+      <a class="promo-card tiendanube" href="https://miaart.mitiendanube.com/" target="_blank" rel="noopener noreferrer">
+        <h3>🛍️ Tienda online</h3>
+        <p>Mia Art en Tienda Nube</p>
+        <span class="go">Ir a la tienda</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Banner Google AdSense (Inferior previo al footer) -->
+  <div class="ads-container">
+    <div class="ads-label">Publicidad</div>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-8795730098491209"
+         data-ad-slot="auto"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+</main>
+
+<footer>
+  <p>Mia Art · hecho para pintar con las manos, desde el celu.</p>
+  <p style="margin-top: 10px;"><a href="../">← Volver al Hub</a></p>
+</footer>
+
+<script>
+(function(){
+  const canvas = document.getElementById('paintCanvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  const lineArtImg = document.getElementById('lineArt');
+  const wrap = canvas.parentElement;
+
+  const colors = [
+    '#ff5c5c','#ff9f43','#ffd93d','#8ee083','#38d9a9',
+    '#4dabf7','#748ffc','#d17be8','#f783ac','#c08457',
+    '#3a2c1e','#ffffff'
+  ];
+  let currentColor = colors[0];
+  let mode = 'brush';
+  let barrier = null;
+  let W = 0, H = 0;
+
+  const paletteEl = document.getElementById('palette');
+  colors.forEach((c, i)=>{
+    const b = document.createElement('button');
+    b.className = 'swatch' + (i===0 ? ' selected' : '');
+    b.style.background = c;
+    b.addEventListener('click', ()=> selectColor(c, b));
+    paletteEl.appendChild(b);
+  });
+  const customInput = document.createElement('input');
+  customInput.type = 'color';
+  customInput.id = 'customColor';
+  customInput.value = '#a06cd5';
+  customInput.addEventListener('input', ()=> selectColor(customInput.value, customInput));
+  paletteEl.appendChild(customInput);
+
+  function selectColor(c, el){
+    currentColor = c;
+    document.querySelectorAll('.swatch, #customColor').forEach(s=>s.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  const brushBtn = document.getElementById('brushModeBtn');
+  const bucketBtn = document.getElementById('bucketModeBtn');
+  brushBtn.addEventListener('click', ()=>{ mode='brush'; brushBtn.classList.add('active'); bucketBtn.classList.remove('active'); });
+  bucketBtn.addEventListener('click', ()=>{ mode='bucket'; bucketBtn.classList.add('active'); brushBtn.classList.remove('active'); });
+
+  function setup(){
+    W = lineArtImg.naturalWidth;
+    H = lineArtImg.naturalHeight;
+    wrap.style.aspectRatio = W + ' / ' + H;
+    canvas.width = W;
+    canvas.height = H;
+    ctx.clearRect(0,0,W,H);
+
+    const off = document.createElement('canvas');
+    off.width = W; off.height = H;
+    const octx = off.getContext('2d', { willReadFrequently: true });
+    octx.drawImage(lineArtImg, 0, 0, W, H);
+    const data = octx.getImageData(0,0,W,H).data;
+    barrier = new Uint8Array(W*H);
+    for(let i=0, p=0; p<W*H; i+=4, p++){
+      const lum = 0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2];
+      barrier[p] = lum < 245 ? 1 : 0;
+    }
+  }
+  if(lineArtImg.complete && lineArtImg.naturalWidth){ setup(); }
+  else { lineArtImg.addEventListener('load', setup); }
+
+  let painting = false;
+  let last = null;
+  const sizeInput = document.getElementById('brushSize');
+
+  function getPos(e){
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY, scaleX };
+  }
+
+  function dab(x,y,scaleX){
+    const r = parseFloat(sizeInput.value) * scaleX;
+    ctx.save();
+    ctx.fillStyle = currentColor;
+    ctx.beginPath();
+    ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function strokeTo(x,y,scaleX){
+    if(!last){ dab(x,y,scaleX); last = {x,y}; return; }
+    const dist = Math.hypot(x-last.x, y-last.y);
+    const step = Math.max(1.5, parseFloat(sizeInput.value)*0.25);
+    const steps = Math.max(1, Math.floor(dist/step));
+    for(let i=1;i<=steps;i++){
+      const t = i/steps;
+      dab(last.x + (x-last.x)*t, last.y + (y-last.y)*t, scaleX);
+    }
+    last = {x,y};
+  }
+
+  function hexToRgb(hex){
+    const v = hex.replace('#','');
+    const n = parseInt(v.length===3 ? v.split('').map(c=>c+c).join('') : v, 16);
+    return [(n>>16)&255, (n>>8)&255, n&255, 255];
+  }
+
+  function findNearestOpen(x,y,maxR){
+    if(!barrier[y*W+x]) return [x,y];
+    for(let r=1; r<=maxR; r++){
+      for(let dx=-r; dx<=r; dx++){
+        for(let dy=-r; dy<=r; dy++){
+          if(Math.max(Math.abs(dx),Math.abs(dy))!==r) continue;
+          const nx=x+dx, ny=y+dy;
+          if(nx<0||ny<0||nx>=W||ny>=H) continue;
+          if(!barrier[ny*W+nx]) return [nx,ny];
+        }
+      }
+    }
+    return null;
+  }
+
+  function floodFill(startX, startY, fillColor){
+    startX = Math.floor(startX); startY = Math.floor(startY);
+    if(startX<0||startY<0||startX>=W||startY>=H) return;
+    if(barrier[startY*W+startX]){
+      const found = findNearestOpen(startX, startY, 14);
+      if(!found) return;
+      startX = found[0]; startY = found[1];
+    }
+
+    const imgData = ctx.getImageData(0,0,W,H);
+    const data = imgData.data;
+    const idx = (x,y)=> (y*W+x)*4;
+    const si = idx(startX,startY);
+    const t0=data[si], t1=data[si+1], t2=data[si+2], t3=data[si+3];
+    const [fr,fg,fb,fa] = fillColor;
+    if(t0===fr && t1===fg && t2===fb && t3===fa) return;
+
+    function matches(i){
+      return data[i]===t0 && data[i+1]===t1 && data[i+2]===t2 && data[i+3]===t3;
+    }
+    function setPx(i){ data[i]=fr; data[i+1]=fg; data[i+2]=fb; data[i+3]=fa; }
+
+    const stack = [[startX,startY]];
+    while(stack.length){
+      const [x,y] = stack.pop();
+      let xl = x;
+      while(xl>0 && !barrier[y*W+(xl-1)] && matches(idx(xl-1,y))) xl--;
+      let xr = x;
+      while(xr<W-1 && !barrier[y*W+(xr+1)] && matches(idx(xr+1,y))) xr++;
+      let aboveSpan=false, belowSpan=false;
+      for(let xi=xl; xi<=xr; xi++){
+        setPx(idx(xi,y));
+        if(y>0){
+          const up = !barrier[(y-1)*W+xi] && matches(idx(xi,y-1));
+          if(up && !aboveSpan){ stack.push([xi,y-1]); aboveSpan=true; }
+          else if(!up){ aboveSpan=false; }
+        }
+        if(y<H-1){
+          const down = !barrier[(y+1)*W+xi] && matches(idx(xi,y+1));
+          if(down && !belowSpan){ stack.push([xi,y+1]); belowSpan=true; }
+          else if(!down){ belowSpan=false; }
+        }
+      }
+    }
+    ctx.putImageData(imgData,0,0);
+  }
+
+  canvas.addEventListener('pointerdown', (e)=>{
+    const p = getPos(e);
+    if(mode==='bucket'){
+      floodFill(p.x, p.y, hexToRgb(currentColor));
+      return;
+    }
+    painting = true;
+    last = null;
+    canvas.setPointerCapture(e.pointerId);
+    strokeTo(p.x,p.y,p.scaleX);
+    e.preventDefault();
+  });
+  canvas.addEventListener('pointermove', (e)=>{
+    if(!painting || mode!=='brush') return;
+    const p = getPos(e);
+    strokeTo(p.x,p.y,p.scaleX);
+    e.preventDefault();
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>{
+    canvas.addEventListener(ev, ()=>{ painting=false; last=null; });
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', ()=>{
+    ctx.clearRect(0,0,W,H);
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', ()=>{
+    const out = document.createElement('canvas');
+    out.width = W; out.height = H;
+    const octx = out.getContext('2d');
+    octx.fillStyle = '#ffffff';
+    octx.fillRect(0,0,W,H);
+    octx.drawImage(canvas,0,0);
+    octx.globalCompositeOperation = 'multiply';
+    octx.drawImage(lineArtImg,0,0,W,H);
+    octx.globalCompositeOperation = 'source-over';
+    const link = document.createElement('a');
+    link.download = 'mia-art-pintura.png';
+    link.href = out.toDataURL('image/png');
+    link.click();
+  });
+})();
+</script>
+</body>
+</html>
