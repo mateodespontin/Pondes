@@ -14,7 +14,7 @@
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='20' y='45' width='60' height='30' rx='10' fill='%23fff'/><path d='M15 48 C15 32 85 32 85 48 Z' fill='%23ff7a59'/><rect x='44' y='36' width='12' height='42' rx='2' fill='%231f2923'/></svg>">
 
   <!-- Script oficial de Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8795730098491209" crossorigin="anonymous"></script>
 
   <style>
     :root {
@@ -48,7 +48,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 2.2rem 1.2rem 1.8rem 1.2rem;
+      padding: 1.2rem 1.2rem 1.8rem 1.2rem;
     }
 
     .container {
@@ -57,11 +57,48 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.4rem;
+      gap: 1.2rem;
+    }
+
+    /* Botón Home compacto arriba */
+    .top-nav {
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 0.2rem;
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      color: var(--text-main);
+      padding: 6px 16px;
+      border: 1px solid var(--card-border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(4px);
+      transition: all 0.2s ease;
+    }
+
+    .btn-home span {
+      font-size: 1.1rem;
+      font-weight: 300;
+    }
+
+    .btn-home:hover {
+      background: #ffffff;
+      border-color: var(--salmon-accent);
+      color: var(--salmon-accent);
     }
 
     header {
       text-align: center;
+      width: 100%;
     }
 
     header h1 {
@@ -358,6 +395,13 @@
 
   <div class="container">
 
+    <!-- Botón Home Minimalista Superior -->
+    <nav class="top-nav">
+      <a href="https://mateodespontin.github.io/Pondes" class="btn-home">
+        <span>←</span> Home
+      </a>
+    </nav>
+
     <header>
       <h1>Contador de Sushi</h1>
       <p>Lleva la cuenta exacta de tus piezas consumidas</p>
@@ -425,8 +469,8 @@
       <span class="ad-label">Publicidad</span>
       <ins class="adsbygoogle"
            style="display:block; width:100%; text-align:center;"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-           data-ad-slot="YYYYYYYYYY"
+           data-ad-client="ca-pub-8795730098491209"
+           data-ad-slot="auto"
            data-ad-format="auto"
            data-full-width-responsive="true"></ins>
       <script>
@@ -437,7 +481,7 @@
   </div>
 
   <footer>
-    <p><a href="404.html">← Volver a Pondes Pages</a></p>
+    <p><a href="https://mateodespontin.github.io/Pondes">← Volver al Hub</a></p>
   </footer>
 
   <script>
