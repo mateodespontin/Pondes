@@ -33,7 +33,43 @@
   }
   a{color:inherit;}
 
-  header.hero{ text-align:center; padding:56px 20px 28px; }
+  /* Barra de Navegación Superior */
+  .top-nav {
+    position: relative;
+    z-index: 100;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 1.5rem 20px 0 20px;
+    display: flex;
+    justify-content: flex-start;
+  }
+  .btn-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.05rem;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    color: var(--ink-soft);
+    padding: 8px 20px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #fffdf8;
+    box-shadow: 0 2px 10px rgba(58,44,30,0.06);
+    transition: all 0.2s ease;
+  }
+  .btn-home span {
+    font-size: 1.15rem;
+    font-weight: 300;
+  }
+  .btn-home:hover {
+    border-color: var(--gold);
+    color: var(--gold-2);
+    transform: translateY(-1px);
+  }
+
+  header.hero{ text-align:center; padding:24px 20px 24px; }
   header.hero h1{
     font-family:'Playfair Display', serif;
     font-size:clamp(2.2rem, 6vw, 3.4rem);
@@ -198,6 +234,13 @@
 </head>
 <body>
 
+<!-- Botón Home Minimalista Superior -->
+<div class="top-nav">
+  <a href="https://mateodespontin.github.io/Pondes" class="btn-home">
+    <span>←</span> Home
+  </a>
+</div>
+
 <header class="hero">
   <h1>Mia <span>Art</span></h1>
   <p class="tagline">Tocá el dibujo · Pintá con el celu</p>
@@ -228,7 +271,7 @@
     <p class="hint">Elegí un color, después deslizá el dedo para pintar libremente, o tocá "Balde" y apretá una zona del dibujo para rellenarla de color.</p>
   </section>
 
-  <!-- Banner Google AdSense (Superior al bloque social) -->
+  <!-- Banner Google AdSense Superior -->
   <div class="ads-container">
     <div class="ads-label">Publicidad</div>
     <ins class="adsbygoogle"
@@ -258,7 +301,7 @@
     </div>
   </section>
 
-  <!-- Banner Google AdSense (Inferior previo al footer) -->
+  <!-- Banner Google AdSense Inferior -->
   <div class="ads-container">
     <div class="ads-label">Publicidad</div>
     <ins class="adsbygoogle"
@@ -275,7 +318,7 @@
 
 <footer>
   <p>Mia Art · hecho para pintar con las manos, desde el celu.</p>
-  <p style="margin-top: 10px;"><a href="../">← Volver al Hub</a></p>
+  <p style="margin-top: 10px;"><a href="https://mateodespontin.github.io/Pondes">← Volver al Hub</a></p>
 </footer>
 
 <script>
@@ -488,11 +531,4 @@
 })();
 </script>
 </body>
-     <!-- Botón Home Minimalista Superior -->
-<div style="width: 100%; max-width: 410px; margin: 0 auto 1.6rem auto; display: flex; justify-content: flex-start;">
-  <a href="https://mateodespontin.github.io/Pondes" 
-     style="display: inline-flex; align-items: center; gap: 8px; font-size: 1.05rem; font-weight: 300; letter-spacing: 0.08em; text-decoration: none; color: var(--text-main, #2b2623); padding: 8px 18px; border: 1px solid var(--card-border, #ebdccf); border-radius: 999px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(4px); transition: all 0.2s ease;">
-    <span style="font-size: 1.15rem; font-weight: 300;">←</span> Home
-  </a>
-</div>
 </html>
