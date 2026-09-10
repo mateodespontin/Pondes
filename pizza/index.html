@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Contador de Pizza // Slice Counter</title>
 
-  <meta name="theme-color" content="#fcf6ef">
+  <meta name="theme-color" content="#fcf6ee">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="PizzaCounter">
@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M20 25 Q50 18 80 25 L50 85 Z' fill='%23ffb703'/><path d='M16 26 Q50 16 84 26 L80 18 Q50 10 20 18 Z' fill='%23e76f51'/><circle cx='45' cy='38' r='7' fill='%23d62828'/><circle cx='58' cy='52' r='6' fill='%23d62828'/></svg>">
 
   <!-- Script oficial de Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8795730098491209" crossorigin="anonymous"></script>
 
   <style>
     :root {
@@ -50,7 +50,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 2.2rem 1.2rem 1.8rem 1.2rem;
+      padding: 1.2rem 1.2rem 1.8rem 1.2rem;
     }
 
     .container {
@@ -59,11 +59,48 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.4rem;
+      gap: 1.2rem;
+    }
+
+    /* Botón Home compacto y pegado al header */
+    .top-nav {
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 0.2rem;
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      color: var(--text-main);
+      padding: 6px 16px;
+      border: 1px solid var(--card-border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(4px);
+      transition: all 0.2s ease;
+    }
+
+    .btn-home span {
+      font-size: 1.1rem;
+      font-weight: 300;
+    }
+
+    .btn-home:hover {
+      background: #ffffff;
+      border-color: var(--pizza-red);
+      color: var(--pizza-red);
     }
 
     header {
       text-align: center;
+      width: 100%;
     }
 
     header h1 {
@@ -79,7 +116,6 @@
       color: var(--text-muted);
     }
 
-    /* Ilustración Porción de Pizza Vectorial */
     .pizza-art-box {
       width: 155px;
       height: 135px;
@@ -361,51 +397,46 @@
 
   <div class="container">
 
+    <!-- Botón Home Minimalista integrado arriba -->
+    <nav class="top-nav">
+      <a href="https://mateodespontin.github.io/Pondes" class="btn-home">
+        <span>←</span> Home
+      </a>
+    </nav>
+
     <header>
       <h1>Contador de Pizza</h1>
       <p>Lleva la cuenta exacta de tus porciones consumidas</p>
     </header>
 
-    <!-- Ilustración Porción Vectorial -->
+    <!-- Ilustración Porción Vectorial interactiva -->
     <div class="pizza-art-box" onclick="triggerIncrement()" title="Toca para sumar 1 porción">
       <svg viewBox="0 0 180 160" width="100%" height="100%">
-        <!-- Borde de Masa / Crust Dorada -->
         <path d="M 52 48 Q 112 36 150 64 C 158 72 154 84 142 82 Q 106 58 52 70 C 44 68 44 52 52 48 Z" fill="#e98835" stroke="#2b211b" stroke-width="4.5" stroke-linejoin="round"/>
         <path d="M 64 54 Q 108 44 140 68" fill="none" stroke="#f6be65" stroke-width="3" stroke-linecap="round"/>
-
-        <!-- Base de Queso y Salsa con Gotas de Queso Fundido -->
         <path d="M 50 68 Q 98 56 142 82 C 140 102 118 126 94 136 C 88 148 78 152 76 138 C 72 148 64 150 62 136 C 54 136 44 124 38 116 L 38 106 C 42 106 46 96 46 88 Z" fill="#f8c325" stroke="#2b211b" stroke-width="4.5" stroke-linejoin="round"/>
 
-        <!-- Rodajas de Peperoni -->
-        <!-- Peperoni 1 -->
+        <!-- Peperonis -->
         <circle cx="76" cy="74" r="14" fill="#c82d1c" stroke="#2b211b" stroke-width="3.5"/>
         <path d="M 70 70 Q 76 66 82 72" fill="none" stroke="#e86b59" stroke-width="2.5" stroke-linecap="round"/>
-        <!-- Peperoni 2 -->
         <circle cx="118" cy="80" r="16" fill="#c82d1c" stroke="#2b211b" stroke-width="3.5"/>
         <path d="M 112 74 Q 120 70 126 78" fill="none" stroke="#e86b59" stroke-width="2.5" stroke-linecap="round"/>
-        <!-- Peperoni 3 -->
         <circle cx="58" cy="98" r="13" fill="#c82d1c" stroke="#2b211b" stroke-width="3.5"/>
         <path d="M 54 94 Q 60 90 64 96" fill="none" stroke="#e86b59" stroke-width="2.5" stroke-linecap="round"/>
-        <!-- Peperoni 4 -->
         <circle cx="92" cy="106" r="13.5" fill="#c82d1c" stroke="#2b211b" stroke-width="3.5"/>
         <path d="M 88 102 Q 94 98 98 104" fill="none" stroke="#e86b59" stroke-width="2.5" stroke-linecap="round"/>
 
         <!-- Champiñones -->
-        <!-- Champiñón 1 -->
         <path d="M 60 82 C 60 76 68 76 68 82 Z" fill="#ffffff" stroke="#2b211b" stroke-width="2.5"/>
         <rect x="63" y="82" width="2.5" height="3" fill="#ffffff" stroke="#2b211b" stroke-width="2"/>
-        <!-- Champiñón 2 -->
         <path d="M 94 88 C 94 82 102 82 102 88 Z" fill="#ffffff" stroke="#2b211b" stroke-width="2.5"/>
         <rect x="97" y="88" width="2.5" height="3" fill="#ffffff" stroke="#2b211b" stroke-width="2"/>
-        <!-- Champiñón 3 -->
         <path d="M 72 120 C 72 114 80 114 80 120 Z" fill="#ffffff" stroke="#2b211b" stroke-width="2.5"/>
         <rect x="75" y="120" width="2.5" height="3" fill="#ffffff" stroke="#2b211b" stroke-width="2"/>
 
-        <!-- Albahaca / Hojas verdes -->
+        <!-- Albahaca y destello -->
         <path d="M 78 88 Q 86 86 84 94 Q 78 94 78 88 Z" fill="#40916c" stroke="#2b211b" stroke-width="2"/>
         <path d="M 76 106 Q 84 104 82 112 Q 76 112 76 106 Z" fill="#40916c" stroke="#2b211b" stroke-width="2"/>
-
-        <!-- Destello / Brillo estético -->
         <path d="M 134 68 Q 138 68 138 64 Q 138 68 142 68 Q 138 68 138 72 Q 138 68 134 68 Z" fill="#ffffff"/>
       </svg>
     </div>
@@ -423,11 +454,11 @@
       <button type="button" class="btn-reset" id="btn-reset">Reiniciar cuenta</button>
     </main>
 
-    <!-- Solapa Desplegable: Amortizar Pizza Libre -->
+    <!-- Solapa Desplegable de Cálculo -->
     <details id="calc-details" class="details-card">
       <summary>🍕 Cuántas porciones para amortizar la pizza libre</summary>
       <div class="calc-content">
-        <p class="calc-subtitle">Ingresa el precio del menú de pizza libre y el valor de una porción (o porción equivalente) para calcular el punto de equilibrio.</p>
+        <p class="calc-subtitle">Ingresa el precio del menú de pizza libre y el valor por porción común para saber el punto de equilibrio.</p>
 
         <div class="form-group">
           <label for="menu-price">Precio del menú libre</label>
@@ -453,13 +484,13 @@
       </div>
     </details>
 
-    <!-- Bloque Google AdSense -->
+    <!-- Publicidad AdSense -->
     <div class="ad-wrapper">
       <span class="ad-label">Publicidad</span>
       <ins class="adsbygoogle"
            style="display:block; width:100%; text-align:center;"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-           data-ad-slot="YYYYYYYYYY"
+           data-ad-client="ca-pub-8795730098491209"
+           data-ad-slot="auto"
            data-ad-format="auto"
            data-full-width-responsive="true"></ins>
       <script>
@@ -470,7 +501,7 @@
   </div>
 
   <footer>
-    <p><a href="404.html">← Volver a Pondes Pages</a></p>
+    <p><a href="https://mateodespontin.github.io/Pondes">← Volver al Hub</a></p>
   </footer>
 
   <script>
@@ -591,7 +622,7 @@
       theme_color: "#fcf6ee",
       icons: [
         {
-          src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M20 25 Q50 18 80 25 L50 85 Z' fill='%23ffb703'/><path d='M16 26 Q50 16 84 26 L80 18 Q50 10 20 18 Z' fill='%23e76f51'/><circle cx='45' cy='38' r='7' fill='%23d62828'/></svg>",
+          src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M20 25 Q50 18 80 25 L50 85 Z' fill='%23ffb703'/><path d='M16 26 Q50 16 84 26 L80 18 Q50 10 20 18 Z' fill='%23e76f51'/><circle cx='45' cy='38' r='7' fill='%23d62828'/><circle cx='58' cy='52' r='6' fill='%23d62828'/></svg>",
           sizes: "192x192 512x512",
           type: "image/svg+xml",
           purpose: "any maskable"
