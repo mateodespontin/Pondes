@@ -1,6 +1,6 @@
 # ¿Juega Messi hoy? — todo en un solo archivo.
-# Se guarda en: .github/workflows/messi.yml
-# Se actualiza 4 veces por día: 10, 17, 20 y 23 hs (hora Argentina).
+# Va en el repo Pondes, en: .github/workflows/messi.yml
+# Genera la carpeta messi-hoy/ con la página, 4 veces por día (10, 17, 20 y 23 hs de Argentina).
 
 name: Juega Messi hoy
 
@@ -10,27 +10,28 @@ on:
   workflow_dispatch:                # botón para correrlo a mano
   push:
     branches: [main]
+    paths: [".github/workflows/messi.yml"]
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-  actions: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: messi-hoy
   cancel-in-progress: false
 
 jobs:
   actualizar:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
+
       - name: Armar la página
+        env:
+          CARPETA: messi-hoy
         run: |
-          cat > check.py <<'PY'
+          # si quedó un archivo suelto llamado "messi-hoy", lo borra para poder crear la carpeta
+          if [ -f messi-hoy ]; then git rm -q messi-hoy; fi
+          cat > /tmp/check.py <<'PY'
           """
           ¿Juega Messi hoy?
           Consulta los datos públicos de ESPN (gratis, sin clave) y genera public/index.html.
@@ -221,11 +222,12 @@ jobs:
           <p class="det">{detalle}</p>
           {partido_html}
           {prox_html}
-          <footer>Actualizado: {fecha_linda(ahora)} (hora Argentina) · Datos: ESPN</footer>
+          <footer><a href="../" style="color:inherit">← Volver al Hub</a><br><br>Actualizado: {fecha_linda(ahora)} (hora Argentina) · Datos: ESPN</footer>
           </body></html>"""
 
-              os.makedirs("public", exist_ok=True)
-              with open("public/index.html", "w", encoding="utf-8") as f:
+              carpeta = os.environ.get("CARPETA", "public")
+              os.makedirs(carpeta, exist_ok=True)
+              with open(os.path.join(carpeta, "index.html"), "w", encoding="utf-8") as f:
                   f.write(html)
               print("Listo:", respuesta, "-", detalle)
 
@@ -233,18 +235,13 @@ jobs:
           if __name__ == "__main__":
               armar()
           PY
-          python3 check.py
+          python3 /tmp/check.py
 
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: public
-      - id: deploy
-        uses: actions/deploy-pages@v4
-
-      # GitHub apaga las tareas programadas si el repo pasa 60 días sin actividad. Esto lo evita.
-      - name: Mantener activo
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/messi.yml/enable"
+      - name: Guardar en el repo
+        run: |
+          git config user.name "messi-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A messi-hoy
+          git commit -q -m "Actualiza ¿Juega Messi hoy?" || exit 0
+          git pull -q --rebase
+          git push -q
