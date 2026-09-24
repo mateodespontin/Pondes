@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¿Juega Messi hoy?</title>
+  <meta property="og:title" content="¿Juega Messi hoy?">
+  <meta property="og:description" content="Entrá y fijate si hoy juega Messi, en vivo.">
+  <style>
+    :root {
+      --bg: #f6f8fa; --fg: #24292f; --muted: #57606a; --card: #ffffff; --line: #d0d7de;
+      --si: #1a7f37; --no: #cf222e; --quizas: #bf8700; --celeste: #75aadb;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8d96a0; --card: #161b22; --line: #30363d;
+              --si: #3fb950; --no: #f85149; --quizas: #d29922; }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 2rem 1rem; text-align: center;
+    }
+    h1 { font-size: 1.1rem; font-weight: 600; color: var(--muted); margin-bottom: .5rem; }
+    .big { font-size: clamp(3.2rem, 17vw, 7.5rem); font-weight: 900; line-height: 1; margin: .4rem 0 .8rem; letter-spacing: -1px; }
+    .si { color: var(--si); } .no { color: var(--no); } .quizas { color: var(--quizas); } .cargando { color: var(--muted); }
+    .det { font-size: 1.15rem; margin-bottom: 1.8rem; max-width: 480px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.2rem;
+            margin-bottom: .75rem; width: 100%; max-width: 420px; }
+    .lbl { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: .35rem; }
+    .match { font-weight: 700; font-size: 1.05rem; }
+    .sub { color: var(--muted); font-size: .88rem; margin-top: .25rem; }
+    footer { margin-top: 1.4rem; font-size: .8rem; color: var(--muted); line-height: 1.8; }
+    footer a { color: var(--celeste); text-decoration: none; font-weight: 600; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>⚽ ¿Juega Messi hoy?</h1>
+  <div id="respuesta" class="big cargando">…</div>
+  <p id="detalle" class="det">Buscando partidos…</p>
+
+  <div id="hoy" class="card hidden">
+    <div class="lbl">Partido de hoy</div>
+    <div id="hoy-match" class="match"></div>
+    <div id="hoy-sub" class="sub"></div>
+  </div>
+  <div id="prox" class="card hidden">
+    <div class="lbl">Próximo partido</div>
+    <div id="prox-match" class="match"></div>
+    <div id="prox-sub" class="sub"></div>
+  </div>
+
+  <footer>
+    <a href="../">← Volver al Hub</a><br>
+    <span id="actualizado"></span> · Datos: ESPN
+  </footer>
+
+  <script>
+    const TZ = 'America/Argentina/Buenos_Aires';
+    const MESSI_ID = '45843';
+    const BASE = 'https://site.api.espn.com/apis/site/v2/sports/soccer';
+    // [liga en ESPN, id del equipo]  Inter Miami = 20232 · Argentina = 202
+    const EQUIPOS = [
+      ['usa.1', '20232'], ['concacaf.champions', '20232'], ['concacaf.leagues.cup', '20232'],
+      ['usa.open', '20232'], ['fifa.cwc', '20232'], ['club.friendly', '20232'],
+      ['fifa.friendly', '202'], ['fifa.worldq.conmebol', '202'], ['conmebol.america', '202'],
+      ['fifa.world', '202'], ['uefa.conmebol.finalissima', '202'],
+    ];
+
+    const diaAR = d => d.toLocaleDateString('en-CA', { timeZone: TZ });            // 2026-09-24
+    const horaAR = d => d.toLocaleTimeString('es-AR', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false });
+    const fechaLinda = d => d.toLocaleDateString('es-AR', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long' }) + ', ' + horaAR(d) + ' hs';
+
+    async function getJSON(url) {
+      try { const r = await fetch(url); return r.ok ? await r.json() : null; } catch { return null; }
+    }
+
+    async function partidos() {
+      const urls = [];
+      for (const [liga, eq] of EQUIPOS)
+        for (const extra of ['', '?fixture=true']) urls.push([liga, `${BASE}/${liga}/teams/${eq}/schedule${extra}`]);
+      const res = await Promise.all(urls.map(async ([liga, u]) => [liga, await getJSON(u)]));
+      if (res.every(([, d]) => !d)) throw new Error('sin datos');
+      const todos = {};
+      for (const [liga, data] of res) {
+        for (const ev of (data && data.events) || []) {
+          try {
+            const comp = ev.competitions[0];
+            const equipos = comp.competitors.map(c => ({
+              nombre: c.team.displayName,
+              local: c.homeAway === 'home',
+              goles: (c.score && typeof c.score === 'object') ? c.score.displayValue : c.score,
+            })).sort((a, b) => b.local - a.local);
+            todos[ev.id] = {
+              id: ev.id, liga, fecha: new Date(ev.date),
+              estado: (comp.status && comp.status.type && comp.status.type.state) || 'pre',
+              torneo: (ev.league && ev.league.name) || (ev.season && ev.season.displayName) || '',
+              equipos,
+            };
+          } catch {}
+        }
+      }
+      return Object.values(todos).sort((a, b) => a.fecha - b.fecha);
+    }
+
+    async function situacionMessi(p) {
+      const data = await getJSON(`${BASE}/${p.liga}/summary?event=${p.id}`);
+      const rosters = (data && data.rosters) || [];
+      if (!rosters.some(r => r.roster && r.roster.length)) return null;   // todavía no hay formación
+      for (const r of rosters)
+        for (const j of r.roster || []) {
+          const a = j.athlete || {};
+          if (String(a.id) === MESSI_ID || (a.displayName || '').includes('Messi'))
+            return j.starter ? 'titular' : (j.subbedIn ? 'entro' : 'suplente');
+        }
+      return 'no_convocado';
+    }
+
+    function textoPartido(p) {
+      const [a, b] = p.equipos;
+      if (p.estado !== 'pre' && a.goles != null) return `${a.nombre} ${a.goles} - ${b.goles} ${b.nombre}`;
+      return `${a.nombre} vs. ${b.nombre}`;
+    }
+
+    function mostrar(respuesta, color, detalle) {
+      const el = document.getElementById('respuesta');
+      el.textContent = respuesta; el.className = 'big ' + color;
+      document.getElementById('detalle').textContent = detalle;
+      document.title = `¿Juega Messi hoy? ${respuesta}`;
+    }
+
+    function tarjeta(id, p, sub) {
+      document.getElementById(id).classList.remove('hidden');
+      document.getElementById(id + '-match').textContent = textoPartido(p);
+      document.getElementById(id + '-sub').textContent = sub;
+    }
+
+    async function actualizar() {
+      try {
+        const ahora = new Date();
+        const lista = await partidos();
+        const hoy = lista.filter(p => diaAR(p.fecha) === diaAR(ahora));
+        const prox = lista.find(p => p.fecha > ahora && diaAR(p.fecha) !== diaAR(ahora));
+
+        if (!hoy.length) {
+          mostrar('NO', 'no', 'Hoy no hay partido.');
+        } else {
+          const p = hoy[0];
+          const hora = horaAR(p.fecha) + ' hs';
+          const m = await situacionMessi(p);
+          if (p.estado === 'post') {
+            if (m === 'titular') mostrar('JUGÓ', 'si', 'Fue titular.');
+            else if (m === 'entro') mostrar('JUGÓ', 'si', 'Entró desde el banco.');
+            else if (m === 'suplente') mostrar('NO JUGÓ', 'no', 'Estuvo en el banco pero no entró.');
+            else mostrar('NO JUGÓ', 'no', 'No estuvo en el partido.');
+          } else if (m === 'titular') {
+            mostrar('SÍ', 'si', p.estado === 'in' ? 'Es titular. ¡Está jugando ahora!' : `Es titular. Arranca a las ${hora}.`);
+          } else if (m === 'entro') {
+            mostrar('SÍ', 'si', 'Entró desde el banco. ¡Está jugando ahora!');
+          } else if (m === 'suplente') {
+            mostrar('EN EL BANCO', 'quizas', `Arranca como suplente. Partido a las ${hora}.`);
+          } else if (m === 'no_convocado') {
+            mostrar('NO', 'no', 'Hay partido pero Messi no está en la lista.');
+          } else {
+            mostrar('PROBABLEMENTE', 'quizas', `Hay partido a las ${hora}. La formación sale 1 hora antes.`);
+          }
+          tarjeta('hoy', p, `${p.torneo} · ${hora}`);
+        }
+        if (prox) tarjeta('prox', prox, `${prox.torneo} · ${fechaLinda(prox.fecha)}`);
+        document.getElementById('actualizado').textContent = 'Actualizado ' + horaAR(ahora) + ' hs';
+      } catch (e) {
+        mostrar('?', 'cargando', 'No pude conectar con los datos. Probá recargar en un rato.');
+      }
+    }
+
+    actualizar();
+    setInterval(actualizar, 5 * 60 * 1000);   // se actualiza sola cada 5 minutos
+  </script>
+</body>
+</html>
